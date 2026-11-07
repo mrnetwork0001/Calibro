@@ -1,4 +1,4 @@
-import { getLedger, getMemory, getPayer, getTatum, jsonResponse, paymentConfig, resolveMode } from "@/lib/server/runtime";
+import { getLedger, getMemory, getPayer, getTatum, jsonResponse, operatorTokenRequired, paymentConfig, resolveMode } from "@/lib/server/runtime";
 import { hasOddsApiKey } from "@/lib/data/odds-api";
 
 export const runtime = "nodejs";
@@ -50,6 +50,7 @@ export async function GET(): Promise<Response> {
       payerError: payer ? undefined : payerError,
       payerBalances,
     },
+    operator: { tokenRequired: operatorTokenRequired() },
     checkedAt: new Date().toISOString(),
   });
 }
