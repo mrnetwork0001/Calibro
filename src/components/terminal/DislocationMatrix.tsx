@@ -14,7 +14,11 @@ export function DislocationMatrix(props: {
   busyId: string | null;
   settledIds: Set<string>;
   onEvaluate: (m: MarketOpportunity) => void;
+  /** Operator (spends real SUI) or visitor (free preview on resolved games) */
+  canOperate?: boolean;
 }) {
+  // Visitors preview resolved games for free; live evaluation is the operator's.
+  const actionLabel = (m: MarketOpportunity) => (props.canOperate || m.source !== "HISTORICAL" ? "Evaluate" : "Preview");
   const [domain, setDomain] = useState<MarketDomain | "ALL">("ALL");
   const [source, setSource] = useState<"ALL" | "HISTORICAL" | "LIVE">("ALL");
   const [onlyAlerts, setOnlyAlerts] = useState(false);
@@ -122,7 +126,7 @@ export function DislocationMatrix(props: {
                           disabled={props.busyId !== null}
                           onClick={() => props.onEvaluate(m)}
                         >
-                          Evaluate
+                          {actionLabel(m)}
                         </Button>
                       </div>
                     </td>
@@ -145,7 +149,7 @@ export function DislocationMatrix(props: {
                         disabled={props.busyId !== null}
                         onClick={() => props.onEvaluate(m)}
                       >
-                        Evaluate
+                        {actionLabel(m)}
                       </Button>
                     </td>
                   </tr>
