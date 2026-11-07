@@ -1,126 +1,149 @@
-# CALIBRO — Autonomous Bayesian Prediction & Sports-Odds Syndicate
+# Calibro: system specification (as built)
 
-> **Total Recall: Tatum x Walrus Memory Hackathon Master Specification**
-> **Primary Track:** Markets & Sports Prediction ($1,000)
-> **Bonus Targets:** Best Walrus Memory ($500) · Best Use of Agent Payments ($500) · Best Tatum AI Builder App ($500)
-> **Core Stack:** Next.js 15 · TypeScript · `@mysten-incubation/memwal` (`0.1.13`) · `@mysten/seal` · `@mysten/sui` (`v2`) · Tatum Sui Mainnet Gateway & v4 Data APIs · HTTP `x402` + `MPP`
-> **License:** Apache-2.0
+> Total Recall, Tatum x Walrus Memory Hackathon · Markets & Sports Prediction track · Best Walrus Memory · Best Use of Agent Payments
+> Stack: Next.js 15 (App Router) · React 19 · TypeScript · Tailwind v4 · `@mysten-incubation/memwal` 0.1.13 + `@mysten/seal` · `@mysten/sui` v2 · Tatum Sui GraphQL gateway + v4 rates · HTTP 402 (x402 + MPP) · vitest
+> License: Apache-2.0
 
----
-
-## 1. Problem Statement & Core Thesis
-
-Prediction agents and sports-betting copilots suffer from **epistemic amnesia**:
-1. Every session starts with flat priors — treating a noisy Twitter sentiment scraper and an elite injury/line-movement model identically.
-2. Agents waste money buying redundant or degraded paid data feeds (`x402` / `MPP`) because they cannot recall historical **Value of Information (VoI)** by league, market type, or volatility regime.
-3. Even when an agent logs outcomes in a local SQLite file, that calibration intelligence is trapped on one machine and unencrypted or unverifiable.
-
-**Calibro** turns **Walrus Memory Mainnet** (encrypted via Mysten **SEAL** and anchored to a Sui `MemWalAccount`) into a **portable, self-calibrating epistemic ledger**, paired with **Tatum's Sui Mainnet RPC & Data APIs** and **Sui `x402`/`MPP` micropayments**.
+This document describes the system as it exists in the repository. `CLAUDE.md` holds the working rules.
 
 ---
 
-## 2. System Architecture
+## 1. Problem
+
+Prediction agents forget. Each session they pay for the same signals, trust every source equally, and learn nothing when a source is confidently wrong. Where results are logged at all, the log sits on one machine and nobody else can check it.
+
+Calibro keeps a per-league track record of every source on Walrus Memory, uses it to decide which signals are worth paying for over HTTP 402 on Sui, and updates it from real results. The record is portable: any process with the account id and delegate key recalls the same state.
+
+## 2. Architecture
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                     BOOKMAKER vs. ON-CHAIN ODDS INGESTION                    │
-│  Sharp Sportsbooks (Pinnacle/DraftKings via Odds API + curated replay)       │
-│  vs. Prediction Markets & Sui Pool State (via Tatum Sui RPC + Data APIs)     │
-└──────────────────────────────────────┬───────────────────────────────────────┘
-                                       │
-                                       ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│               1. WALRUS MEMORY RECALL PHASE (@mysten-incubation/memwal)      │
-│  • Recall `calibro:mandates` (sort: "recent") -> Kelly cap, x402 slate cap   │
-│  • Recall `calibro:calibration` (sort: "recent") -> Specialist Brier + Slope │
-│  • Recall `calibro:episodic` (sort: "relevance") -> Analogous historicals    │
-└──────────────────────────────────────┬───────────────────────────────────────┘
-                                       │
-                                       ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│          2. DETERMINISTIC x402 VALUE-OF-INFORMATION (VoI) PAYMENT GATE       │
-│  For each Specialist Signal Endpoint (`/api/signals/[specialistId]`):        │
-│    Expected VoI > x402 Fee ?                                                 │
-│      ├─ NO  -> VETO PAYMENT (save Sui/USDC; log reason to UI tape)           │
-│      └─ YES -> Receive HTTP 402 + `WWW-Authenticate: Payment` (x402 + MPP)   │
-│                Sign & execute Sui Mainnet PTB -> Verify via Tatum Sui RPC    │
-└──────────────────────────────────────┬───────────────────────────────────────┘
-                                       │
-                                       ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│             3. BAYESIAN LOG-ODDS AGGREGATOR & KELLY RISK GATE                │
-│  • De-bias each unlocked signal: logit(p_cal) = a_i * logit(p_raw) + b_i     │
-│  • Precision-weight by inverse recalled Brier score in this market domain    │
-│  • Size edge against sharp book / market via Fractional Kelly (<= 0.25x)     │
-└──────────────────────────────────────┬───────────────────────────────────────┘
-                                       │
-                                       ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│            4. POST-MORTEM AUDITOR -> WALRUS MAINNET WRITEBACK                │
-│  • Record episodic prediction + Sui x402 txDigests -> `calibro:episodic`     │
-│  • Upon settlement: compute Brier delta, update Platt (a_i, b_i), write new  │
-│    calibration memory -> `calibro:calibration` (returns Mainnet `blob_id`)   │
-└──────────────────────────────────────────────────────────────────────────────┘
+ Polymarket (Gamma + CLOB)   ESPN (DraftKings lines, BPI)   The Odds API (Pinnacle)   Kalshi   Manifold
+            │  point-in-time snapshot: resolved markets priced 5 min before the start
+            ▼
+ 1. RECALL   Walrus Memory: calibro:mandates (risk rules), calibro:calibration (per source × league),
+             calibro:episodic (similar settled games)
+            ▼
+ 2. GATE     per source: exploration (first 4 settled games) → veto if Brier > 0.265
+             → veto if VoI ≤ fee in USD (Tatum v4 SUI/USD) → veto if the slate budget is spent
+            ▼
+ 3. PAY      GET /api/signals/:id → 402 (MPP + x402) → Sui Mainnet transfer → paid retry
+             → server verifies the digest through Tatum's Sui GraphQL gateway → signed signal
+            ▼
+ 4. DECIDE   Platt de-biasing → trust weights → quarter-Kelly across book and on-chain legs (paper)
+            ▼  thesis sealed in calibro:episodic (signals, digests, vetoes, stake)
+ 5. LEARN    when Polymarket resolves (clean 1/0): score each bought signal, update Brier + Platt,
+             write calibration checkpoints and the post-mortem back to Walrus
 ```
 
----
+Code: `src/lib/orchestrator/syndicate-engine.ts` (loop), `src/lib/calibration/brier.ts` (maths), `src/lib/walrus/memory-client.ts` (memory), `src/lib/tatum/sui-rpc.ts` (Tatum), `src/lib/x402/` (payments), `src/lib/markets/` and `src/lib/data/` (data).
 
-## 3. The 4 Specialist Signal Endpoints (`x402` + `MPP` Gated)
+## 3. Data (all real)
 
-Each specialist exposes `/api/signals/[id]` protected by dual `x402` + `MPP` (`402 Payment Required`):
+| What | Source |
+|---|---|
+| Markets, prices, hourly history, resolution | Polymarket Gamma + CLOB public APIs; resolved means UMA "resolved" with a clean 1/0 payout |
+| Sportsbook lines | DraftKings open/close/current via ESPN; Pinnacle via The Odds API for upcoming games when `THE_ODDS_API_KEY` is set |
+| Model forecast | ESPN BPI pre-game matchup predictor (NBA) |
+| Outside crowds | Kalshi exchange candles; Manifold bet history |
+| SUI/USD | Tatum v4 rate API |
 
-| Specialist ID | Domain Strength | Deliberate Historical Flaw (Learned by Calibro) | Fee (Sui Mainnet) |
-| :--- | :--- | :--- | :--- |
-| `sharp-steam` | Elite on NBA & EPL closing-line steam (Brier ~`0.13`) | Slightly conservative on heavy favorites | `0.002 SUI` (or `0.01 USDC`) |
-| `injury-scout` | Elite on late NBA/EPL roster & pace shocks (Brier ~`0.15`) | Neutral when no lineup news exists | `0.002 SUI` |
-| `onchain-flow` | Strong on crypto/macro prediction markets (Brier ~`0.16`) | Mediocre on low-liquidity sports props (Brier ~`0.27`) | `0.002 SUI` |
-| `hype-contrarian` | High-noise retail narrative chaser — **uncalibrated** on EPL/NBA (Brier ~`0.35`, overconfident `>80%`) | Systematically overconfident; negative net VoI after Epoch 6 | `0.002 SUI` *(Auto-vetoed after Recall!)* |
+Resolved markets are priced as of 5 minutes before the scheduled start (last Polymarket print, closing line, pre-game BPI), so training uses no hindsight.
 
-This design guarantees a **dramatic, honest, reproducible demonstration**: in Cold Start (Epoch 1), Calibro buys all 4 signals. After resolving 12+ markets into Walrus Mainnet, Calibro automatically **vetoes `hype-contrarian` on sports**, **vetoes `onchain-flow` on sports props** (while keeping it on crypto/macro!), and concentrates weights on `sharp-steam` + `injury-scout`.
+## 4. Sources
 
----
+Seven sources, all sold behind the same HTTP 402 gate (`src/lib/specialists/models.ts`). Four are Calibro's own documented models, two are outside crowds, one is Calibro's users. None is assumed to be good; Calibro measures each per league.
 
-## 4. Deterministic Mathematical Model (`src/lib/calibration/brier.ts`)
+| id | model | leagues |
+|---|---|---|
+| `sharp-steam` | de-vigged sportsbook line + ½ of the open→close move (capped ±10 pts) | NBA, EPL, UFC |
+| `power-rating` | ESPN BPI win probability | NBA |
+| `onchain-flow` | Polymarket price + ½ of its last-6h move | all |
+| `hype-contrarian` | `0.5 − 0.8·(p − 0.5) − 0.5·Δ24h` | all |
+| `kalshi-crowd` | Kalshi price (hourly close; live bid/ask mid within 10 pts) | NBA, EPL, UFC |
+| `manifold-crowd` | Manifold forecast (last bet before the start) | NBA |
+| `top-pickers` | trust-weighted picks of users with ≥ 3 graded picks and Brier ≤ 0.25 | upcoming NBA, EPL, UFC |
 
-1. **Brier Score (per specialist $i$, domain $d$):**
-   $$\text{BS}_{i,d} = \frac{1}{N} \sum_{t=1}^{N} (p_{i,t} - y_t)^2 \in [0, 1]$$
-   where $BS = 0.25$ is coin-flip uninformative noise, $BS < 0.18$ is sharp, and $BS > 0.26$ destroys edge.
+A source with no data for a market answers 404 before any challenge, so it is never paid for nothing.
 
-2. **Log-Odds Recalibration (Platt / Shrinkage):**
-   $$\text{logit}(p^{\text{cal}}_i) = \alpha_{i,d} \cdot \text{logit}(p^{\text{raw}}_i) + \beta_{i,d}$$
-   Overconfident specialists receive $\alpha_{i,d} < 1$ (shrinking extreme $85\%$ calls back toward reality).
+## 5. Maths (`src/lib/calibration/brier.ts`, deterministic)
 
-3. **x402 Value-of-Information (`VoI`) Gate:**
-   $$\text{Skill}_{i,d} = \max(0, 0.25 - \text{BS}_{i,d}) \quad (\text{Brier Skill vs. 0.25 baseline})$$
-   $$\text{ExpectedVoI}_{\text{USD}} = \text{BankrollUSD} \cdot \text{MaxKellyFraction} \cdot \text{Skill}_{i,d} \cdot \gamma$$
-   If $N \ge 4$ resolved samples in domain $d$ and $(\text{BS}_{i,d} > 0.265 \text{ or } \text{ExpectedVoI}_{\text{USD}} \le \text{FeeUSD})$, the gate deterministically returns `VETO_PAYMENT`.
+- Brier per source and league: `BS = (1/N) Σ (p − y)²`; 0.25 is a coin flip.
+- Platt de-biasing: `logit(p_cal) = α·logit(p_raw) + β`, updated online with bounded log-loss steps.
+- Gate: buy everything for the first 4 settled games in a league; then veto when `BS > 0.265`, or when `VoI = bankroll × κ × (0.265 − BS) × 0.6` is at most the fee in USD, or when the slate's x402 budget (mandate, default 0.05 SUI) is spent.
+- Trust weight: `max(0.01, 0.28 − BS)²`, boosted once a source has ≥ 4 samples; the weighted log-odds mean is Calibro's probability. The equal-weight mean is kept for comparison.
+- Stake: `f = min(κ·(P·O − 1)/(O − 1), 5%)`, κ ≤ 0.25, minimum edge 2%, evaluated for YES at the book, YES on-chain and NO on-chain; the best leg wins. Paper only.
 
-4. **Inverse-Brier Ensemble & Fractional Kelly Sizing:**
-   - Specialist precision weight: $w_i \propto \max(0, 0.28 - \text{BS}_{i,d})^2$
-   - Fractional Kelly stake for decimal odds $O$ and calibrated probability $P$:
-     $$f^* = \text{clamp}\left(\kappa \cdot \frac{P \cdot O - 1}{O - 1},\ 0,\ f_{\max}\right), \quad \kappa = 0.25,\ f_{\max} = 0.05$$
+## 6. Walrus Memory
 
----
+Mainnet relayer `https://relayer.memory.walrus.xyz`, SEAL-encrypted. Each record is a semantic header (embedded for recall) plus a JSON payload (parsed exactly after decryption).
 
-## 5. Walrus Memory Namespace Schema
+| Namespace | Records |
+|---|---|
+| `calibro:episodic` | `episodic_v1` theses (prices, Calibro and equal-weight probabilities, signals used with x402 digests, vetoes with reasons, recommended action and stake) and the same record settled (outcome, realized Brier, P&L) |
+| `calibro:calibration` | `calibration_v1` checkpoint per source × league per settlement (samples, Brier, α, β, paid/vetoed counts, last settled market) |
+| `calibro:mandates` | `mandate_v1` bankroll, Kelly multiplier, max stake, min edge, slate x402 budget, leagues |
+| `calibro:picks` | `pick_v1` wallet-signed picks, `scorecard_v1` per-user scorecards, `payout_v1` TopPickers payouts |
 
-All records are formatted with BOTH **human/semantic search header text** (for high-precision vector embeddings in `memwal.recall()`) AND a deterministic **`JSON` payload block** (for exact parsing after SEAL decryption):
+Recall caps at 100 hits and `sort: "recent"` re-sorts a semantic window, so calibration is recalled per (source, league), and the track record, ledger and learning timeline are replayed from settled post-mortems with the engine's own update function (the replay reproduces the stored checkpoints exactly; see `tests/products.test.ts`). Settlement is idempotent: each checkpoint records the market that produced it.
 
-1. **`calibro:episodic`** — One memory per evaluated/settled market prediction (`marketId`, `domain`, `bookImpliedProb`, `calibroProb`, `rawSignals`, `x402TxDigests`, `outcome`, `pnlUsd`).
-2. **`calibro:calibration`** — One memory per specialist-domain calibration checkpoint (`specialistId`, `domain`, `sampleSize`, `brierScore`, `alphaSlope`, `betaIntercept`, `x402PaidCount`, `x402VetoedCount`, `epoch`). Queried with `sort: "recent"`.
-3. **`calibro:mandates`** — User risk & treasury rules (`bankrollUsd`, `kellyMultiplier`, `maxSingleBetPct`, `maxSlateX402BudgetSui`, `preferredDomains`). Queried with `sort: "recent"`.
+## 7. Agent payments (x402 + MPP on Sui)
 
----
+- `402` carries `WWW-Authenticate: Payment realm="calibro-signals", protocol="mpp-sui-v1", network="sui:mainnet", recipient, coinType, amount, challengeId` and `X-Payment-Required` (base64 JSON, x402 v1). `challengeId` is an HMAC-signed, self-describing token, so a stateless function can check the paid retry.
+- Paid retry: `Authorization: Payment <base64>` or `X-Payment: <base64>` with `{ txDigest, challengeId, payer }`.
+- Verification through Tatum's Sui GraphQL (`transaction(digest)`): status success; recipient and every split share credited at least the amount in the challenge's coin; sender is the payer; landed after the challenge; never redeemed. The digest is reserved before the RPC and released on failure. Malformed digests are rejected with 402.
+- Replay ledger: Upstash Redis / Vercel KV in production, file locally.
+- The buyer (`src/lib/x402/http-signal-provider.ts`, `sui-payer.ts`) refuses challenges for more, or for another coin, than the gate approved, serializes payments from one wallet, and refuses to pay itself.
 
-## 6. Hackathon Rubric & Submission Checklist
+| Product | Price | Paid to |
+|---|---|---|
+| Specialist signals (`/api/signals/:id`) | 0.002 SUI (`CALIBRO_X402_DEFAULT_PRICE_RAW`) | signal treasury |
+| TopPickers signal | 0.002 SUI split by trust weight | qualified pickers' wallets, one transaction |
+| Calibro's forecast (`/api/forecast`) | 0.01 SUI (`CALIBRO_FORECAST_PRICE_RAW`) | agent wallet (funds its own signal purchases) |
 
-- [ ] **Walrus Memory Mainnet (>= 10 Memories Mandatory):** Seed & verify **20+ real memories** on `https://relayer.memory.walrus.xyz` across `calibro:episodic`, `calibro:calibration`, and `calibro:mandates`. Surface every `blob_id` in the UI Proof Drawer & README.
-- [ ] **Tatum Integration:**
-  - [ ] Initial market-scanner scaffold generated via `ai.tatum.io` (documented with prompt + screenshots/artifact).
-  - [ ] Live Sui Mainnet JSON-RPC calls via `https://sui-mainnet.gateway.tatum.io` (`sui_getLatestCheckpointSequenceNumber`, `sui_getTransactionBlock`, `suix_getAllBalances`).
-  - [ ] Live SUI/USD & USDC/USD conversion via Tatum v4 Rates API (`https://api.tatum.io/v4/data/rate/symbol`).
-- [ ] **Agent Payments (`x402` + `MPP` on Sui):** Real Sui Mainnet micro-transfers with on-chain `txDigest` verification via Tatum RPC.
-- [ ] **Deliverables before Nov 10, 2026 @ 17:00 UTC:**
-  - [ ] Public GitHub repository (`Apache-2.0`).
-  - [ ] Deployed live demo URL (Vercel) + 3-minute walkthrough video.
-  - [ ] Technical blog post (`docs/BLOG_POST.md` published to Dev.to / Medium / Mirror).
+Discovery: `/.well-known/x402` and `/llms.txt`.
+
+## 8. Users
+
+- **Pick journal** (`/app/picks`): connect a Sui wallet (Wallet Standard), sign a probability up to one minute before the start; the signature is verified through Tatum's gateway (zkLogin included) and the pick is sealed in `calibro:picks`. Rate limited per address and globally.
+- **Grading**: when Polymarket resolves, the settlement job grades picks and updates the scorecard (Brier and Platt per league, the market's Brier on the same games, Calibro's on overlapping games, findings such as overconfidence on favourites).
+- **Coach**: before signing, the user's graded picks and Calibro's settled games are recalled; the deterministic coach (`src/lib/picks/coach.ts`) suggests a shrunk number. Scorecards compare picks made with and without following it.
+- **TopPickers**: users with ≥ 3 graded picks and Brier ≤ 0.25 become a paid, calibrated, vetoable source.
+
+## 9. Reads, caching and scheduling
+
+- **Read cache** (`src/lib/server/read-cache.ts`): Upstash Redis / Vercel KV when configured, shared by every serverless instance; otherwise a JSON file under `.calibro/cache/` locally or the OS temp dir on Vercel without KV. Fresh values are served directly, stale ones while they refresh, and when Walrus Memory fails the last good value is served marked stale with its time. Writes (settle, picks) bump a generation so readers reload.
+- **Read models** (`src/lib/server/read-models.ts`) behind `/api/calibration`, `/api/timeline`, `/api/leaderboard`, `/api/walrus/audit`, `/api/record` and the landing page.
+- **Cron**: `GET /api/cron/settle` settles resolved theses and grades picks; `GET /api/cron/warm` refreshes the read models. Both need `CRON_SECRET`. GitHub Actions (`.github/workflows/settle.yml`) calls them every 30 minutes; `vercel.json` adds a daily run (Hobby-compatible).
+
+## 10. Pages and routes
+
+| Page | What it shows |
+|---|---|
+| `/` | live track record, hero chart of source Brier scores, method, docs for agents |
+| `/app` Terminal | markets (Polymarket vs book, alerts), forecast comparator (no memory vs recalled record), payment tape, calibration ledger and reliability curve, learning timeline, memory inventory |
+| `/app/picks` Pick journal | log a pick with the coach, scorecard, leaderboard |
+| `/app/record` Record | every settled game from Walrus: Calibro vs Polymarket, Brier, paid sources with Sui tx links, refused sources and why, post-mortem blob links, account / wallet / treasury links |
+
+Visitors can press Evaluate on a resolved market: `POST /api/evaluate/preview` runs the same engine with Calibro's real recalled record and signals computed in-process, pays nothing and writes nothing, and is labelled "Preview · nothing paid or written". If Calibro evaluated that game on Mainnet, the recorded blobs and payment digests are shown alongside. Live evaluation (`POST /api/evaluate`) and settlement (`POST /api/settle`) spend SUI and write Walrus, so they need the operator's `x-calibro-admin` token; agents can buy upcoming forecasts over x402 instead.
+
+Read routes: `markets`, `status`, `calibration`, `timeline`, `record`, `leaderboard`, `walrus/audit`, `picks`, `picks/coach`. Paid: `signals/[specialistId]`, `forecast`. Guarded: `evaluate`, `settle`, `cron/settle`, `cron/warm`.
+
+## 11. Scripts
+
+| Command | Does |
+|---|---|
+| `npm run setup:keys` | creates `.env.local` with an agent wallet and server secrets |
+| `npm run memwal:provision` | creates the Walrus Memory account and delegate key |
+| `npm run verify` | preflight: keys, wallet balance, data sources, maths |
+| `npm run train -- --server <url> --yes` | trains on resolved Polymarket games with real payments and writes; merges into `docs/mainnet-memory-proof.json` |
+| `npm run train:preview` | the same backtest, unpaid, nothing written |
+| `npm run settle [-- --every 30]` | settles and grades locally |
+| `npm run agent:portable` | a stateless process that recalls the same ledger and makes the same vetoes |
+| `npm run buy:forecast` | an outside buyer for the forecast product |
+
+## 12. Known limits
+
+- Recall exactness up to roughly 50 settlements per league; beyond that, a compaction snapshot.
+- A vetoed source cannot earn its way back (an unpaid signal can't be scored); exploration is the first 4 settled games per league.
+- The signal treasury is ours: no outside vendor sells sports signals over x402 on Sui today. The payments are still real Mainnet transfers.
+- Stakes are recommendations on a paper bankroll.
