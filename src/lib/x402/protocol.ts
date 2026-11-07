@@ -39,8 +39,15 @@ const SECRET_GLOBAL_KEY = "__calibroX402ChallengeSecret";
 function challengeSecret(): Buffer {
   const fromEnv = process.env.CALIBRO_X402_CHALLENGE_SECRET?.trim();
   if (fromEnv) return Buffer.from(fromEnv, "utf8");
-  // Dev fallback: random per process (kept on globalThis to survive Next.js HMR).
-  // Challenges then expire on restart, which is the safe failure mode.
+  // Every instance of a deployment must sign and verify challenges with the same secret,
+  // or a challenge issued by one serverless instance fails on the next (the buyer pays and
+  // gets nothing). Without an explicit secret, derive one from the Walrus delegate key that
+  // every live instance already holds: an HMAC under a fixed label, so the key can't be
+  // recovered from it and nothing else signed with that key can be forged from it.
+  const memwalKey = process.env.MEMWAL_PRIVATE_KEY?.trim();
+  if (memwalKey) return createHmac("sha256", memwalKey).update("calibro/x402-challenge-secret/v1").digest();
+  // No keys at all (tests, unconfigured dev): random per process, kept on globalThis to
+  // survive Next.js HMR. Challenges then expire on restart, which is the safe failure.
   const g = globalThis as Record<string, unknown>;
   if (!g[SECRET_GLOBAL_KEY]) g[SECRET_GLOBAL_KEY] = randomBytes(32);
   return g[SECRET_GLOBAL_KEY] as Buffer;
