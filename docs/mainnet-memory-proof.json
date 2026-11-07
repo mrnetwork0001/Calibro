@@ -1,0 +1,2013 @@
+{
+  "generatedAt": "2026-11-07T00:15:51.046Z",
+  "startedAt": "2026-11-06T23:54:04.695Z",
+  "complete": true,
+  "network": "mainnet",
+  "relayer": "https://relayer.memory.walrus.xyz",
+  "accountId": "0x47a5e5519693665084fd119d8f0c8802c7a331d8d80b71298183e80af833c0ec",
+  "agentWallet": "0xe33f666912d7e58ea5f86b25c37059b8c47e4dcfb83deadce4603c37e1267c82",
+  "treasury": "0x5e2d891a6c7da182d4618d383d2221b20ba171c1dcdfa836d207af8ceff3a450",
+  "dataSources": [
+    "Polymarket Gamma + CLOB (prices, resolution)",
+    "ESPN (DraftKings lines, BPI)"
+  ],
+  "markets": [
+    {
+      "epoch": 1,
+      "marketId": "poly-epl-5852491",
+      "domain": "EPL",
+      "title": "Will Brentford FC win on 2026-10-31?",
+      "asOf": "2026-10-31T14:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/epl-bre-not-2026-10-31-bre",
+      "outcome": 1,
+      "onchainProb": 0.455,
+      "bookProb": 0.4411,
+      "calibroProb": 0.4753,
+      "naiveProb": 0.4754,
+      "calibroBrier": 0.27531008999999995,
+      "naiveBrier": 0.27520515999999995,
+      "marketBrier": 0.29702499999999993,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.4302,
+          "txDigest": "J66MhMwfdwAWAuwrCdvYxdMXXRHoXw35SHaxoLxDYyH"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.455,
+          "txDigest": "8RucMnWhnA88B4KrwVKx97gUs9qCJe4YvHKXdfsACnTR"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.541,
+          "txDigest": "FqFhUCmEtsu2q8FkNp72M5ZTTb2ARp66362UKqEmbi1M"
+        }
+      ],
+      "vetoed": [],
+      "action": "YES@ONCHAIN $23.28",
+      "pnlUsd": 27.89,
+      "thesisBlobId": "GuUfcnPlf4wUAZxpMivGdsxNov63BLWZPOoBIFipoeE",
+      "postMortemBlobId": "N8lo3QVTNWzAnMvfvZlDLttNomWWAnvfKtJK0YNr5B8",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 2,
+      "marketId": "poly-epl-5852347",
+      "domain": "EPL",
+      "title": "Will AFC Bournemouth win on 2026-10-31?",
+      "asOf": "2026-10-31T14:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/epl-bou-lee-2026-10-31-bou",
+      "outcome": 1,
+      "onchainProb": 0.465,
+      "bookProb": 0.4636,
+      "calibroProb": 0.4793,
+      "naiveProb": 0.4761,
+      "calibroBrier": 0.27112848999999994,
+      "naiveBrier": 0.27447121,
+      "marketBrier": 0.2862249999999999,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.4822,
+          "txDigest": "6NBv24PiUEqycHN3uzhDAyXF41r6QEEZvBUz89e63Mpe"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.47,
+          "txDigest": "AM4U3Hog7ZQPpynZrDaUsnmogNwPu4ogbjSYuuZVgfoD"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled EPL Brier 0.307 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "nyJcoOr8doJsBEP1PwfZ3JPnSeZBvrhIEFYukj2AY3A",
+      "postMortemBlobId": "QxYRrQSVrCxJ-nrm2oxxP-yVsttUJ_pLio6-fE7rQ2k",
+      "calibrationBlobIds": [
+        "TApW7jw-zhcbTZhkF6qeWhj5YQfn0K4fwjhsrXoTkbI",
+        "KeOPyfeN5xcP36OpUCJPWo5VNv8S48NamKwQx0qwIFs",
+        "VufhcPY6s7SzEwAx1khgl_L7sS1HtOzS9IJplU4HgfA"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 3,
+      "marketId": "poly-epl-5852152",
+      "domain": "EPL",
+      "title": "Will Hull City AFC win on 2026-10-31?",
+      "asOf": "2026-10-31T14:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/epl-hul-ips-2026-10-31-hul",
+      "outcome": 0,
+      "onchainProb": 0.345,
+      "bookProb": 0.3293,
+      "calibroProb": 0.3405,
+      "naiveProb": 0.336,
+      "calibroBrier": 0.11594025000000002,
+      "naiveBrier": 0.11289600000000001,
+      "marketBrier": 0.11902499999999998,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3131,
+          "txDigest": "FiJa4jqfRsYbAL6KxyoSBZxmwVKCpivQTEDY6oh6Sxu1"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.35,
+          "txDigest": "GRgo1Ty2ukwrep4Q4ndnkmT2d6VLjeUyKUvxKLyiE4a9"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.345,
+          "txDigest": "2Dm3fb4VXEypTchPBSiWn6RDVAH3vZM9F5VgB1ydNGra"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled EPL Brier 0.307 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "Z8seB8VSOkxSR6t8USdZAYnp42R3QdjzvZqt6Enhin0",
+      "postMortemBlobId": "JdGYWx9D35MyD96MN2FOH_dp21FXMuRW_p76L_frN7o",
+      "calibrationBlobIds": [
+        "hK1KBaCwWiPRe0rE8278wfjxls-3nJKYxr5GVB8kyMo",
+        "2av_TAk5ORes9lE7OmBGI0JL5ivwkZm_eHuNRLQBC3U",
+        "hZaYw2AYD_6sj5r92XkmzoJYPJYT3Y6ubgpTHjscFq8",
+        "6BBBrj2bQPdNS3LChNtwR-sZ-3N5a_ozZktvX7nR0QQ"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 4,
+      "marketId": "poly-epl-5852629",
+      "domain": "EPL",
+      "title": "Will Tottenham Hotspur FC win on 2026-10-31?",
+      "asOf": "2026-10-31T17:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/epl-tot-cry-2026-10-31-tot",
+      "outcome": 1,
+      "onchainProb": 0.575,
+      "bookProb": 0.5787,
+      "calibroProb": 0.4617,
+      "naiveProb": 0.5125,
+      "calibroBrier": 0.28976689,
+      "naiveBrier": 0.23765625000000004,
+      "marketBrier": 0.18062500000000004,
+      "paid": [
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.57,
+          "txDigest": "GMMi9tgKzmA5rS9arEoC1DkQxVU4kz1bfGRRn7an7rfZ"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.455,
+          "txDigest": "4zPN8KSwpf8nBoAoWmcy8ZJ2g3Pt2NnoHXb8AT5uTbV1"
+        }
+      ],
+      "vetoed": [],
+      "action": "NO@ONCHAIN $123.15",
+      "pnlUsd": -123.15,
+      "thesisBlobId": "9ARMF8fmuMU0UaRuFIFBfY3QKdmy_5ocAMaKqfez9wA",
+      "postMortemBlobId": "_WWJK68dwx0rTYdt8iRAg315LwnTAxFxkjQ5ooGDPaM",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 5,
+      "marketId": "poly-ufc-6159703",
+      "domain": "UFC",
+      "title": "UFC Fight Night: Mickey Gall vs. Zach Reese (Middleweight, Prelims)",
+      "asOf": "2026-10-31T20:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/ufc-mic2-zac5-2026-10-31",
+      "outcome": 0,
+      "onchainProb": 0.205,
+      "bookProb": 0.2119,
+      "calibroProb": 0.4615,
+      "naiveProb": 0.473,
+      "calibroBrier": 0.21298225,
+      "naiveBrier": 0.22372899999999998,
+      "marketBrier": 0.04202499999999999,
+      "paid": [
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.2,
+          "txDigest": "CWdfZdH5KS27EUwaup5seLx92pB1uWi9m3zTSr9G81g9"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.746,
+          "txDigest": "9e9Kwn1ckLytPRuSvXwZkoKVfrVBWGxujvG5y2vhYeAH"
+        }
+      ],
+      "vetoed": [],
+      "action": "YES@ONCHAIN $125",
+      "pnlUsd": -125,
+      "thesisBlobId": "RItOYn3AHWfeuQd4A514vrZ3VCDrJfvYjFS5_U6zSlM",
+      "postMortemBlobId": "UrK1ZFflXmIntxR_gl6Dr3L_KVhbYaq7064aiVruGRY",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 6,
+      "marketId": "poly-ufc-6159684",
+      "domain": "UFC",
+      "title": "UFC Fight Night: Randy Brown vs. Jacobe Smith (Welterweight, Main Card)",
+      "asOf": "2026-10-31T20:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/ufc-ran3-jac21-2026-10-31",
+      "outcome": 0,
+      "onchainProb": 0.295,
+      "bookProb": 0.2903,
+      "calibroProb": 0.2851,
+      "naiveProb": 0.4142,
+      "calibroBrier": 0.08128201000000002,
+      "naiveBrier": 0.17156164000000002,
+      "marketBrier": 0.08702499999999999,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.2887,
+          "txDigest": "GADQDCbVQYyieGRrjAERd4Lt6yjfMVXnzXxqCh5aLfT"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.29,
+          "txDigest": "BkM5ofjWeJR3TRTwJzXHbGESiDXmgzrWt9fYNFyXDszn"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.664,
+          "txDigest": "FDBHz7GEzDHVDvb7cmzueXmcrBeecJHnH7PZJJ8tU6Ms"
+        }
+      ],
+      "vetoed": [],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "p2GqSveOm8rnPK66PnRwQw3pFO8So8s_4cJzNpoe9hA",
+      "postMortemBlobId": "V4L-lWK_nWKS7sVCsjCMU4J69YHanGZIjK5wvPGEQgM",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 7,
+      "marketId": "poly-ufc-6159662",
+      "domain": "UFC",
+      "title": "UFC Fight Night: Dakota Hope vs. Francis Marshall (Featherweight, Main Card)",
+      "asOf": "2026-10-31T20:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/ufc-dhope-fra8-2026-10-31",
+      "outcome": 1,
+      "onchainProb": 0.345,
+      "bookProb": 0.3541,
+      "calibroProb": 0.3552,
+      "naiveProb": 0.4504,
+      "calibroBrier": 0.41576704000000003,
+      "naiveBrier": 0.30206015999999997,
+      "marketBrier": 0.42902500000000005,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3772,
+          "txDigest": "3bh78fEUhRRWtUFa6VPsdpbtV1hPmWJwYbebrFGuE7dw"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.35,
+          "txDigest": "8QmSvdafjKLYv1We94CGxLK9aPYEkYveFdLprrHFUPFS"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.624,
+          "txDigest": "2gkzTdjexU97Fd2khQwTpqJ8xS2QGRxy9K8MAYZUjDuu"
+        }
+      ],
+      "vetoed": [],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "hBd-_25M6EYyMroVMTv7av5IF6gVDJzFT-SehJ-pgtE",
+      "postMortemBlobId": "_MmQemccTR2nIWU7WqZY4NWdLayHmTCuSofknDi3z58",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 8,
+      "marketId": "poly-ufc-6159640",
+      "domain": "UFC",
+      "title": "UFC Fight Night: Ode' Osbourne vs. Cody Durden (Flyweight, Main Card)",
+      "asOf": "2026-10-31T20:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/ufc-ode-cod2-2026-10-31",
+      "outcome": 0,
+      "onchainProb": 0.485,
+      "bookProb": 0.4675,
+      "calibroProb": 0.4765,
+      "naiveProb": 0.4773,
+      "calibroBrier": 0.22705224999999998,
+      "naiveBrier": 0.22781529,
+      "marketBrier": 0.235225,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.435,
+          "txDigest": "31RUY5Mhw3XbvJvruwagqqTF9H5dUqgWyNzJHxhMC6XC"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.485,
+          "txDigest": "4Pqwib3AvbzTX6HA1NHnoRdEqS3yKZnvGzs5RZuKvWeB"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.512,
+          "txDigest": "CSbkeEA7pErKvFndijwJHTNz7Pfbt4Da3CXs6Y5dfZyL"
+        }
+      ],
+      "vetoed": [],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "lGobesbbEPGL6ZXHhWhsgkXNoby5-6Bg866H4ZXchYQ",
+      "postMortemBlobId": "7GjftUXctNZN_XYcGtUTj39KJOIqAyl41zJ5ZtSDTD4",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 9,
+      "marketId": "poly-ufc-5839793",
+      "domain": "UFC",
+      "title": "UFC Fight Night: Tainara Lisboa vs. Lucia Szabová (Women's Flyweight, Prelims)",
+      "asOf": "2026-10-31T20:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/ufc-tai2-lucsza-2026-10-31",
+      "outcome": 0,
+      "onchainProb": 0.145,
+      "bookProb": 0.1597,
+      "calibroProb": 0.137,
+      "naiveProb": 0.1428,
+      "calibroBrier": 0.018769000000000004,
+      "naiveBrier": 0.02039184,
+      "marketBrier": 0.021025,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.1456,
+          "txDigest": "4qzq2xcmpc6qg31NryxXq357W8snmurubUY6LHGpB3FA"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.14,
+          "txDigest": "FcEnRuAtt4HVhkieagvFh426FcwswCb53gK2wv57b9GN"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled UFC Brier 0.350 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "Q040MuDZxHLwcJ9Poab6rTTGDl4aHNI6LLShRY2gmoA",
+      "postMortemBlobId": "5U5LI8VEU79CAECH4eAEVhieG9yDSpLjx_0gXxvaqwA",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 10,
+      "marketId": "poly-ufc-5839774",
+      "domain": "UFC",
+      "title": "UFC Fight Night: Piera Rodriguez vs. Talita Alencar (Women's Strawweight, Prelims)",
+      "asOf": "2026-10-31T20:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/ufc-pie-tal1-2026-10-31",
+      "outcome": 1,
+      "onchainProb": 0.715,
+      "bookProb": 0.7233,
+      "calibroProb": 0.7255,
+      "naiveProb": 0.7247,
+      "calibroBrier": 0.07535024999999998,
+      "naiveBrier": 0.07579008999999999,
+      "marketBrier": 0.08122500000000002,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.739,
+          "txDigest": "9Fx8BMEDApjcVF5nUdwa2cQjQ9CrnoujJBgXK7XCR6G3"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.71,
+          "txDigest": "GEbEJHNFPaEk1MdCJsyV9dvjAeoPg9u1Uj4cNwZjHPBs"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.725,
+          "txDigest": "Go8dbwTzgEGM49sg7uHKqbkJJDJg21qHKpXtVMaUgLpR"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled UFC Brier 0.350 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "Ma08rh_mdMU2g6itTXd1A5yJrEBrWQOfQyLJfI15rvw",
+      "postMortemBlobId": "JZtE8bvic6UOKpxutxDm3PwZtSuMK4XJRYzUqWY5unc",
+      "calibrationBlobIds": [
+        "FCUuSdrCOxauaIH3KJr33V4Mc7SSchxRYm95na5CQ9I",
+        "SiWE-6F5vQ3gIGJoLNmIWFBP8bCAL8Lnhh4mJT0OV6E",
+        "pPMyqp65Dosc4bOsfo7GK1W3iARi7ApKodyCkfa0Too",
+        "9S8gZK6ze5NDyHX3ssc-hEVnykz_CS0qP9x0DwpYy40"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 11,
+      "marketId": "poly-ufc-5839755",
+      "domain": "UFC",
+      "title": "UFC Fight Night: Joe Kropschot vs. Nick Klein (Middleweight, Prelims)",
+      "asOf": "2026-10-31T20:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/ufc-jkrops1-nic26-2026-10-31",
+      "outcome": 1,
+      "onchainProb": 0.735,
+      "bookProb": 0.7347,
+      "calibroProb": 0.7451,
+      "naiveProb": 0.738,
+      "calibroBrier": 0.06497401000000001,
+      "naiveBrier": 0.06864400000000001,
+      "marketBrier": 0.07022500000000001,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.739,
+          "txDigest": "9UvRmX7SiTDW55tKqvQejFgoSE5PjWMuwd9Xnd1ZWZgp"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.73,
+          "txDigest": "AcApF7D615n55t6ShjeU2Q5BjhhfNr2d4m2BkXY9GQ77"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.745,
+          "txDigest": "6TLegu1pnqD6eZHBUzWfjEWyhk7Lu4ENeG6ktHSWb5Xh"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled UFC Brier 0.350 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "kzC77bLyahE80wHDh_KEjohXX93N526oLYcoA0Z63MQ",
+      "postMortemBlobId": "IyfO0M0WLwRqK0xGGde_eu3Mwe9cgKXj_6E6bjH8fVE",
+      "calibrationBlobIds": [
+        "KNyBM_6MY8E17FQebwZRMldAAMW3UMKLlUUgPB7rVK0",
+        "6oAOqVBPQJGMXyKZ19Ripb_dUiQ_swCKQLyMYZXOqQE",
+        "0HqGEyR72rvFL_Nx3eWS5OIL0cqojzNKpmm64-0mc4g",
+        "tuPGEhsbb-zXBbcWZ_HIs0fdBy78LssdqsBpMtDVdDs"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 12,
+      "marketId": "poly-epl-5912766",
+      "domain": "EPL",
+      "title": "Will Liverpool FC win on 2026-11-01?",
+      "asOf": "2026-11-01T16:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/epl-liv-ars-2026-11-01-liv",
+      "outcome": 0,
+      "onchainProb": 0.305,
+      "bookProb": 0.3358,
+      "calibroProb": 0.4083,
+      "naiveProb": 0.4397,
+      "calibroBrier": 0.16670889,
+      "naiveBrier": 0.19333609,
+      "marketBrier": 0.093025,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3582,
+          "txDigest": "7buaVUfhe6zDUZjLWFLJQAN5EQ7BsXYLqg5GUTeZ5W7c"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.29,
+          "txDigest": "52vLwEuo6By7WRM79tqSwHMAn2c2JxVfyFHL9rVCKhNA"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.671,
+          "txDigest": "A3BKZn6ZfVkziYw42psoRLsNVmfgnLspZPssQ3pKmsKT"
+        }
+      ],
+      "vetoed": [],
+      "action": "YES@ONCHAIN $92.9",
+      "pnlUsd": -92.9,
+      "thesisBlobId": "3XWb70KC1h1EVqrQqC7nyESvN-W96e77L4gGykfk8aY",
+      "postMortemBlobId": "A42EFfMFo-k65cC8x_fMAMVjosQmsL4zY5KeU3hBFBE",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 13,
+      "marketId": "poly-epl-5957352",
+      "domain": "EPL",
+      "title": "Will Newcastle United FC win on 2026-11-02?",
+      "asOf": "2026-11-02T19:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/epl-new-eve-2026-11-02-new",
+      "outcome": 0,
+      "onchainProb": 0.455,
+      "bookProb": 0.4357,
+      "calibroProb": 0.4594,
+      "naiveProb": 0.4717,
+      "calibroBrier": 0.21104836,
+      "naiveBrier": 0.22250089,
+      "marketBrier": 0.20702500000000001,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.434,
+          "txDigest": "4VgXM1hVpbe2ri5Nz8r5Vae9Lwbm3H6JTYxr6JYTUbGq"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.46,
+          "txDigest": "CDAvo9SNL7NtWtpJ728uaxbLZHLLK3JxJKUw9NRLxLz4"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.521,
+          "txDigest": "64wpiqC53PVbeqAuMdNtVd1cpQ9RtWibnoyy8NHuo6PH"
+        }
+      ],
+      "vetoed": [],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "FW0I4SpUzJt7Kuz0h1SYO7RXYutljqUznEe2vKCmkJQ",
+      "postMortemBlobId": "bO2-BtlW84aHl9L4JsRHVqrEw27aJaFuZb0Sakx2QTQ",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 14,
+      "marketId": "poly-nba-6293056",
+      "domain": "NBA",
+      "title": "Bucks vs. Timberwolves",
+      "asOf": "2026-11-03T00:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-mil-min-2026-11-02",
+      "outcome": 0,
+      "onchainProb": 0.215,
+      "bookProb": 0.2,
+      "calibroProb": 0.1888,
+      "naiveProb": 0.1955,
+      "calibroBrier": 0.03564544,
+      "naiveBrier": 0.038220250000000004,
+      "marketBrier": 0.046224999999999995,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.1728,
+          "txDigest": "H9u2nabv1AB8Ka4weZMSz2n5sj61FahzSzpAzkcmXuBN"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.1696,
+          "txDigest": "A2SfH4vsJmZzw3WSndzQjzS1hjr9ZQ4zy9ig8MZ5cmK"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.23,
+          "txDigest": "CuZMvJphRe9scE5tyXwB3WQhe1TMKuKtrqWLB1GWhN4h"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.215,
+          "txDigest": "3yM6oPmPM168XTp1jEwhzKbYwMYSpEnmWMoxyG9AFDGj"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.19,
+          "txDigest": "qWFi1j6tX2CmMWuFDGqn9cTNDdxV3meWLZp5wVz4NDK"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "NO@ONCHAIN $76.16",
+      "pnlUsd": 20.87,
+      "thesisBlobId": "H8HjVsUoTDVMUVMq1nJo8NxX_0RyCeedY1Fwj3eXZaM",
+      "postMortemBlobId": "weArHc71LDy8HKNREh54j7BtorjpAeW0RNNi4RCVq5o",
+      "calibrationBlobIds": [
+        "7LHvvHiIPUGbiuhymFe8l1zEriWDDZHy61EdcJeyF-Y",
+        "BNqe6tpZdDlIt32VsOQ6jXl0tfLl-Goxncf_MYhWbSM",
+        "ZaCSpnrN5lQYNUVtlzFKiKSe9tMkjPZXFf-JwWNrVQ0",
+        "oVV2c90KnYnNpHO-sLyWG8a-UJn3NiNHJ1f4dWvP3dw",
+        "LaKcnR6vNBaGbaiWNbjQ0O5-nuUB2rp2EhwlC80PVxA",
+        "2HY2ww2k3LcBZM-SasAC0oI9yq1XRHxZ5fqBKqiFhjQ"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 15,
+      "marketId": "poly-nba-6293053",
+      "domain": "NBA",
+      "title": "Pelicans vs. Grizzlies",
+      "asOf": "2026-11-03T00:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-nop-mem-2026-11-02",
+      "outcome": 1,
+      "onchainProb": 0.335,
+      "bookProb": 0.3443,
+      "calibroProb": 0.3418,
+      "naiveProb": 0.343,
+      "calibroBrier": 0.43322724,
+      "naiveBrier": 0.43164900000000006,
+      "marketBrier": 0.44222500000000003,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3591,
+          "txDigest": "DDpBgfkjiHdoWGdvAwtm4fbD2C2J9sJaNLAaPS2Qx6KA"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.3357,
+          "txDigest": "5Xx8y613TUzWhc3rpmrVFBx1RDmzJ97vqCdrDMX7VUgJ"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.325,
+          "txDigest": "45ASPuNx8cEkE88C8WM1YQCuXcEE5UFa1DdhgxmZ8gae"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.345,
+          "txDigest": "GYi7bihovKjAUrvcEjFuKHRPhi7iQiM9gXwEqaXyiPqd"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.35,
+          "txDigest": "AfJXYER6g7RjpSrTKDbFeZpv32tK5Q2fbzhHAsZpiuBN"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "ytYdKEbJ5pH98H1r3uvyh-WDN9wZJPh9-O6X18xe-bw",
+      "postMortemBlobId": "Z2j3FaTcI1Yu4q0tx_IwvGbjiKM6Z0wPySK_B3_p9g0",
+      "calibrationBlobIds": [
+        "6SK1Ex9BME8hgZwKiGZAsturEaHORwtOnmsGl8mPedE",
+        "iSxJwftjxEf7Cb2vblGyYuT9FrrclBMoRZFXvO6IZ2w",
+        "a6KozeX_PfGY_C2u8LwJtfDkRT1EqSJI4fBrDyjHXxk",
+        "7bE_p8oPFPCSwJufseaT5hKYpUtmX4gkHn3km3r_JnQ",
+        "Pa-mOCbuiopob_9IsWplmS0loMVnrgNGfLRo6PAY9wI",
+        "oKCdYmFXpXuPxCbZFUAH7GJxHnqxspKwEnDPO4MsHQA"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 16,
+      "marketId": "poly-nba-6293062",
+      "domain": "NBA",
+      "title": "Jazz vs. Spurs",
+      "asOf": "2026-11-03T01:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-uta-sas-2026-11-02",
+      "outcome": 0,
+      "onchainProb": 0.095,
+      "bookProb": 0.1139,
+      "calibroProb": 0.1071,
+      "naiveProb": 0.1058,
+      "calibroBrier": 0.01147041,
+      "naiveBrier": 0.011193640000000001,
+      "marketBrier": 0.009025,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.0974,
+          "txDigest": "G2LXcnLf3wA5ZCjbRuJhRbCBXrzTViVwCeKrXhXrPbFc"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.1408,
+          "txDigest": "A8qYEbAuKBRgbAvbeEYBV2k6yQEaGwZzV5ziNDtAmmWA"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.085,
+          "txDigest": "4N5X6kS7wEf9WEsqyrT8einkX797MftVRrwWo6tktkfZ"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.1,
+          "txDigest": "BFHqCiVekJshxznvKRcWPFPdS6J7TLa1XLtXmPT6VWmo"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "kPFboRFHMDWQ-tUptZAcdkBUG6xZL2s7w1FVqVP7Ds4",
+      "postMortemBlobId": "vrW56LAgQzbT0NJdjjo0S_5jJG4iQlp0hbbB99B2hTE",
+      "calibrationBlobIds": [
+        "1ALiXPHs9ehWQbonQYR2B4xqMf1Wz4LNoEpvJrDfpvk",
+        "V6JybSRDBmIEsarkxdlYjwfbDWLbYwHEBno6tzd_FMI",
+        "cHA7GmQ-UN3QK-wl1zzeUxhXVXlWQdoWEPdrOqFytX4",
+        "UOA4aGcvwChHp3nNCOioH0Kbf3C9mT2BasdiP3meKVU",
+        "KzMg2WzwLn3YheCt86137DlaeTyhFALCMHGMFVEQBMQ"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 17,
+      "marketId": "poly-nba-6293059",
+      "domain": "NBA",
+      "title": "Celtics vs. Rockets",
+      "asOf": "2026-11-03T01:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-bos-hou-2026-11-02",
+      "outcome": 0,
+      "onchainProb": 0.375,
+      "bookProb": 0.3827,
+      "calibroProb": 0.4009,
+      "naiveProb": 0.3913,
+      "calibroBrier": 0.16072081,
+      "naiveBrier": 0.15311569,
+      "marketBrier": 0.140625,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3853,
+          "txDigest": "AkXF8161QihZiC8g46LncdXHwTHfjSffWE7ELFVeGnUe"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.4313,
+          "txDigest": "8EbeSt4hf7zAxGxxahvsAaGBNqNM5FZG4vMaw9qmfoR4"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.385,
+          "txDigest": "GQUo5Bv5nyJNPjw7NA8PbEZN7Hx8YF3593N3LRKiTMvB"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.375,
+          "txDigest": "ABDdqjpwL7wENPrArofJtrNxEoL7U7N4mSZUR1oQ1pHw"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.38,
+          "txDigest": "F7KVbNAFSF4WRG9MSnD7FsotpRWPkULveztrkNSNYVe1"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "YES@ONCHAIN $25.9",
+      "pnlUsd": -25.9,
+      "thesisBlobId": "QqOQM4j15NSEZ7L_2_9uNgNf40zYT5_WWwlPsiaRecg",
+      "postMortemBlobId": "LWAPhEjUKDwupr-gNi1EdQY7N41vEJNTooE7lLHO4Bk",
+      "calibrationBlobIds": [
+        "SszK10hF396JCzn1-nPFTw-kNisdWEsVv4N3PvINESg",
+        "tg0VbTH-AalhpOxHbn-dXH9i8uxSbu5HoA4vpzbeg4M",
+        "scJkVuGvfV1u7SpsDsIb0kchZ_Y6ZZAPi00JTAqDr1A",
+        "3JQbigc9u6TGZs94MWufRu5JQkO61MgTuDG-rX_dTiw",
+        "SoeLSsi4Ba6kPsZa6edY3qXoS1OgrXZXiavvUlU8NZY",
+        "5zJOfBmwuiiLS4VJO3yJUJZvrA8CBZ3j5rGUyRFrm3I"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 18,
+      "marketId": "poly-nba-6293065",
+      "domain": "NBA",
+      "title": "Trail Blazers vs. Nuggets",
+      "asOf": "2026-11-03T01:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-por-den-2026-11-02",
+      "outcome": 1,
+      "onchainProb": 0.385,
+      "bookProb": 0.3896,
+      "calibroProb": 0.3997,
+      "naiveProb": 0.3968,
+      "calibroBrier": 0.3603600900000001,
+      "naiveBrier": 0.36385023999999994,
+      "marketBrier": 0.378225,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3816,
+          "txDigest": "4ULbibxjJFjYeWNvKLXUZPP42HZB42Mf1e14qVyMURVU"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.4206,
+          "txDigest": "5zWPAdZ1AkZtFhsRz5yjYQTUsfvmnEczoJsAecj6GiZG"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.385,
+          "txDigest": "Hk9zdmxGZ3JR5tzYdMELjndiUGSgneY3dmArTshF4zLe"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.4,
+          "txDigest": "DnbBAGoAMGj6K8zuqGbtGfJnQfPNDXMb7nYvrCxoCgDh"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "avBh_7Yug94LUUq90NvGifocV-_mSQVSL5ktCLWyGSg",
+      "postMortemBlobId": "MWR9hO74pe_5bzHEZ5HB5MLKRtfufSpbNEl4JtEECdM",
+      "calibrationBlobIds": [
+        "JQrJ_x83sFMSBwVhQl1vytMRZ8Pux0dqWyW92f5VHKw",
+        "fOD4PRAkJoU5WZI2N3y73elcKX6NZK5c-5BmXx_7P3c",
+        "Dp4LLE7_eOM0reijMlEup41SoSKU3esVS4A41Pd1kEw",
+        "vA9bOejqSDoVHumED4zn38eGJNg5AyID0CjHxZqyD9s",
+        "qeVHoUn96mZmWULaWnQCI5VwyVevn3ObXI3ubW2zm-c"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 19,
+      "marketId": "poly-nba-6293074",
+      "domain": "NBA",
+      "title": "Heat vs. Lakers",
+      "asOf": "2026-11-03T02:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-mia-lal-2026-11-02",
+      "outcome": 0,
+      "onchainProb": 0.445,
+      "bookProb": 0.456,
+      "calibroProb": 0.4411,
+      "naiveProb": 0.4382,
+      "calibroBrier": 0.19456921,
+      "naiveBrier": 0.19201923999999998,
+      "marketBrier": 0.198025,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.4451,
+          "txDigest": "5MrRVbELmZ8F3ED22bmmGcawrx8Am73yj8h57rEkxEx2"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.4211,
+          "txDigest": "AjzBnnP98nuc4ZpwYFoBGKtQYZ7VrC4PWbnuemvjZu5W"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.44,
+          "txDigest": "5e2Et4MFL23i5TLSbb4Xkj2JiqiHrm8CFbT8HGwZ5Byn"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.445,
+          "txDigest": "JAdRw3w5mZsjrzcrFGxc5pay4DE5YcZcjYVMxTFBzrAK"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.44,
+          "txDigest": "Fy3ppzCUYyjpiipn3LcRubTTDhvzXEVKeKUjTLRQX3Un"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "8cVXhfhepI3-CopfqMCRe65KhxHSJf8io_yookV8RQ8",
+      "postMortemBlobId": "eG9zSmuCmKdroMgMR6XZCA9xMfW896WmKyxKpAP10Zo",
+      "calibrationBlobIds": [
+        "SntSD9mmKZkJuq7zcFeofmCGihCv788XDqkrT9UxxHM",
+        "NyKoVfegfx0mx5cvbRf0T884BbX78Q18mDYwwjACTzM",
+        "_yf_Tjo75pnXQYIsKx0oA4BytXppMKDHLCkOFLbFVxs",
+        "Y3Jl5aD3zvsawM7YPMLrpIZlHFB3ird4VMngbF8EwR4",
+        "iozTO7IK94tHsgltKC1hDaiGEs9dOklJAoRo0E_-DEw",
+        "2BG7Bz281Kc5C7ArtUYgHqALESuHvTidD4v6UEOslEo"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 20,
+      "marketId": "poly-nba-6293071",
+      "domain": "NBA",
+      "title": "Raptors vs. Clippers",
+      "asOf": "2026-11-03T02:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-tor-lac-2026-11-02",
+      "outcome": 1,
+      "onchainProb": 0.625,
+      "bookProb": 0.669,
+      "calibroProb": 0.6492,
+      "naiveProb": 0.6401,
+      "calibroBrier": 0.12306064,
+      "naiveBrier": 0.12952801,
+      "marketBrier": 0.140625,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.6846,
+          "txDigest": "E5smWxfxn1qrbnmQxBwiuTP7YQzX1ZtHiCcFk6U9hBrk"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.6308,
+          "txDigest": "FqzpfsnYVzU1EatceAgdw1dcYWP4cbd1Azw4mdzVKncf"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.605,
+          "txDigest": "FBxEU3mMMb7hYuzCrPVviJCpCyLRBAsZFmd7eJB3WabS"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "YES@ONCHAIN $40.33",
+      "pnlUsd": 24.2,
+      "thesisBlobId": "-4KqmExZVbNFFpsefgPP44ttW1sKazGQrRUTTdBN1So",
+      "postMortemBlobId": "1TyYl3B1jdGc3WvkYlkIk10gVJ2J_PC17Ke4Yl-zMnE",
+      "calibrationBlobIds": [
+        "t7nte12A2soi2Y3kFUFQ5_Sz2qcSDhnwvqC7gE9NM90",
+        "kbuM_k6dmfb4SKvAqVdCvnquB3QXsUw50YW4uW8Qt6E",
+        "R8bld6m1AB7gQmVm_1MjjIiVfvYzyrNdhXrgPcdnjCs",
+        "ZbjPhWk3MrBl_movb7V7JW4P-fp4IK1DPwmG7a5n1fw"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 21,
+      "marketId": "poly-nba-6293068",
+      "domain": "NBA",
+      "title": "Suns vs. Warriors",
+      "asOf": "2026-11-03T02:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-phx-gsw-2026-11-02",
+      "outcome": 0,
+      "onchainProb": 0.435,
+      "bookProb": 0.4459,
+      "calibroProb": 0.4547,
+      "naiveProb": 0.448,
+      "calibroBrier": 0.20675209,
+      "naiveBrier": 0.20070400000000002,
+      "marketBrier": 0.189225,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.4775,
+          "txDigest": "DUMTGoLRst5rNyfPjyEov6uvAd4jmqxVeMBae2JVGrQz"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.4523,
+          "txDigest": "5QVjwsPTcStUzn2TjXsixBH9jrzj44j3U6SwMQmGnfzr"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.435,
+          "txDigest": "CPHwmQYnopbhCwsELSUvTa2d1GMPphaMV7VLNZsQerth"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.435,
+          "txDigest": "CY9oWyihAAP8Y1b6NqSswZWYYN7dM6ccBwzVqDCvpASr"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.44,
+          "txDigest": "9KZ3XqNwg6UZA895E7gEsADQTeXF47PaGK9FHNCN6JYP"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "zo3bfgKe9vCDEj9c0LCiGbG7ZWpaZ_-CpaYncMlSW8w",
+      "postMortemBlobId": "RIDPUEKJm1pRwEzF9ifSN0U0bCUIEmiIUiVm2zlgb5A",
+      "calibrationBlobIds": [
+        "XIj-IIFiKj44PF0Ks-Z_iC_bIJVhSAhAkt-KpW-a-xE",
+        "YBnx3OI4NUBdqKPkDI8r4wiJV-DeWh6CtCDpER2fZO8",
+        "s1lCz1xahZys_aU7ovdl16qcrBHcnDbZJYg3k1edDzA",
+        "i4PAOcB-fVQ_7jWhB5DtmnOK29c7HowZLIsBWe4iyNE",
+        "Fo7p68rdFO7KstjQIBceC2K5eQOAZYvmTU_SWaCJ4Ew",
+        "GRdakrrrx0Q3fsSYW5Rr7JE6rYtzTrrsqYPLT88LMOw"
+      ],
+      "status": "TRAINED"
+    },
+    {
+      "epoch": 22,
+      "marketId": "poly-nba-6374092",
+      "domain": "NBA",
+      "title": "Hawks vs. Wizards",
+      "asOf": "2026-11-04T23:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-atl-was-2026-11-04",
+      "outcome": 1,
+      "onchainProb": 0.555,
+      "bookProb": 0.5377,
+      "calibroProb": 0.5181,
+      "naiveProb": 0.5181,
+      "calibroBrier": 0.23222761,
+      "naiveBrier": 0.23222761,
+      "marketBrier": 0.19802499999999995,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.5403,
+          "txDigest": "6gbivRAv7Nbc1shMnEy66ZTV7svKMTPUrL6MtdujvXRS"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.5412,
+          "txDigest": "3dA5839Ti8GfopwEohC9REjWTbzgMzEbb9qSBhoeB4DS"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.545,
+          "txDigest": "8WZ1AXMik63W4x2uHb5NdMAbuAakV89tKt9bZ4mnTjTZ"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.446,
+          "txDigest": "EngXxNem6LGSN36oYbJXbJ3rjPHPGRQe1JSkBWt81ghy"
+        }
+      ],
+      "vetoed": [],
+      "action": "NO@ONCHAIN $41.55",
+      "pnlUsd": -41.55,
+      "thesisBlobId": "HcAk13-NbjPsnJDapEyYrnVFnf2W_L02pp9pYUdWGvQ",
+      "postMortemBlobId": "DDr3wab18jjvgrDam9IoCGpNmvOQyE44VDRHrvPEr68",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 23,
+      "marketId": "poly-nba-6374089",
+      "domain": "NBA",
+      "title": "76ers vs. Pistons",
+      "asOf": "2026-11-04T23:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-phi-det-2026-11-04",
+      "outcome": 1,
+      "onchainProb": 0.445,
+      "bookProb": 0.4359,
+      "calibroProb": 0.47,
+      "naiveProb": 0.4902,
+      "calibroBrier": 0.28090000000000004,
+      "naiveBrier": 0.25989604000000005,
+      "marketBrier": 0.30802499999999994,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.4149,
+          "txDigest": "133zLxEi5Rac4gwYBwUHynkXW1cdc98HpP72CSQDRmjv"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.5368,
+          "txDigest": "CHZEMLW15uari61kLk4va4h5Xy1njMDjAUiyw6wy51uc"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.445,
+          "txDigest": "CjwBDNYzhePN3FkxEqhgvNB5jRCktJ9ZaX4tE51qAiD5"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.564,
+          "txDigest": "5gPNkq97SjK1E3MAkf4XFT9dM9SseL5JAaKBb5P4kR67"
+        }
+      ],
+      "vetoed": [],
+      "action": "YES@ONCHAIN $28.15",
+      "pnlUsd": 35.1,
+      "thesisBlobId": "aQFzODSayuBg8lQv9b5XAYupGn-LkjBcyjQRi32ohdo",
+      "postMortemBlobId": "pwVBldIPzpC9OjpVMbqJsw8UzMV8SWX-yER1BkgJE2Y",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 24,
+      "marketId": "poly-nba-6374101",
+      "domain": "NBA",
+      "title": "Bulls vs. Knicks",
+      "asOf": "2026-11-05T00:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-chi-nyk-2026-11-04",
+      "outcome": 0,
+      "onchainProb": 0.175,
+      "bookProb": 0.1817,
+      "calibroProb": 0.2314,
+      "naiveProb": 0.3207,
+      "calibroBrier": 0.05354596,
+      "naiveBrier": 0.10284848999999999,
+      "marketBrier": 0.030624999999999996,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.1881,
+          "txDigest": "388R5xzo79EotdiEMnCGTxNZ2MJdSwoUoKuenn8kRXzy"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.1547,
+          "txDigest": "4zmkuhSuJpLsRnKZk2BECqQa6mtNZCHZnSQY4YMDgm6R"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.18,
+          "txDigest": "HjS9UFjWFvZjfUcnysj7ucbM6peUAKWXQASVXhUJY8Ca"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.76,
+          "txDigest": "3enMCYzLfFLUJdjFrtYw1ivH5KDGBpLnMpCPxpfE5P9F"
+        }
+      ],
+      "vetoed": [],
+      "action": "YES@ONCHAIN $42.73",
+      "pnlUsd": -42.73,
+      "thesisBlobId": "0Ckrl9nJrCKtaYhT6C0nCV9XRZZKuzeX5HqG3yeg65s",
+      "postMortemBlobId": "J1xdo3Zz5D678J_ljLggLdwqoZeS2UNByzh16kSYSMw",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 25,
+      "marketId": "poly-nba-6374098",
+      "domain": "NBA",
+      "title": "Hornets vs. Nets",
+      "asOf": "2026-11-05T00:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-cha-bkn-2026-11-04",
+      "outcome": 0,
+      "onchainProb": 0.605,
+      "bookProb": 0.606,
+      "calibroProb": 0.6003,
+      "naiveProb": 0.553,
+      "calibroBrier": 0.3603600899999999,
+      "naiveBrier": 0.30580900000000005,
+      "marketBrier": 0.366025,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.632,
+          "txDigest": "5Lw1WQ5qLoDcMtvogaceZZopZUZZwhnHoDBmwtjj3ekm"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.5689,
+          "txDigest": "AbXNz8SHKcnvG8WHPAC3HxGjTVJPo5qXzesnE1jWPjej"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.605,
+          "txDigest": "9FL8xvqJU3esQp9Shgw4kDTiF6Kunvf1vqHeVojat6jK"
+        },
+        {
+          "specialistId": "hype-contrarian",
+          "p": 0.406,
+          "txDigest": "2TqDzemtoahfdzwooQaweQHkCkTYtEYGSAgq8Xwo8JHm"
+        }
+      ],
+      "vetoed": [],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "AXzeRgVR043vagRu7cURXygIgiSFtmAOS8PGted-2DQ",
+      "postMortemBlobId": "o3xlv08t3RpJ51rKnw2vOx6bZaMj2GnsA6q-jZq5Rxo",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 26,
+      "marketId": "poly-nba-6374095",
+      "domain": "NBA",
+      "title": "Bucks vs. Celtics",
+      "asOf": "2026-11-05T00:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-mil-bos-2026-11-04",
+      "outcome": 0,
+      "onchainProb": 0.155,
+      "bookProb": 0.1825,
+      "calibroProb": 0.1403,
+      "naiveProb": 0.16,
+      "calibroBrier": 0.01968409,
+      "naiveBrier": 0.0256,
+      "marketBrier": 0.024025,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.2105,
+          "txDigest": "CwoDiFyiQvPPNApMFph2z1Wy7LSwN2tFC7MEYSQ1Knhh"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.1344,
+          "txDigest": "DNN6Phv57PN8HAW4ZqcyAKNNWvhaNuyoA9gd8cqo8SSE"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.135,
+          "txDigest": "HsjCPFT8WzK3fKGAhc8vnFps15PiouyjQBfhhQi8VDCz"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "C7F9AzkF5uCZ_asBUMGuJ7uzILGOofUVpFpTKH3jK3A",
+      "postMortemBlobId": "zgOt5BIvaATmQhdCVvB2tF6axNc_8TtZFJI6ng87u3g",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 27,
+      "marketId": "poly-nba-6380783",
+      "domain": "NBA",
+      "title": "Cavaliers vs. Thunder",
+      "asOf": "2026-11-05T00:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-cle-okc-2026-11-04",
+      "outcome": 0,
+      "onchainProb": 0.395,
+      "bookProb": 0.407,
+      "calibroProb": 0.3893,
+      "naiveProb": 0.389,
+      "calibroBrier": 0.15155449,
+      "naiveBrier": 0.151321,
+      "marketBrier": 0.15602500000000002,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3888,
+          "txDigest": "FcBv3dcyzQgtXYLdBJVkFw8sfgw31iSAcPXkutRCeZ4W"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.3832,
+          "txDigest": "BDR67NKUmC9H9YEr6SiFkVZ2wewYUtQjpmbwmY1VH8Ay"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.395,
+          "txDigest": "91UBfPVW62aUa537NRsb5xYy4nam9dm6Zgur8kqUFwrr"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "fDBqqMgr04KLn3dSY28-vdTrug2JA3wdvdlq6NFunp4",
+      "postMortemBlobId": "ZSu83YRkFdwjyNiCRQAZBvK2kET6cmSch8AQEQ-5Klo",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 28,
+      "marketId": "poly-nba-6380780",
+      "domain": "NBA",
+      "title": "Jazz vs. Pelicans",
+      "asOf": "2026-11-05T00:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-uta-nop-2026-11-04",
+      "outcome": 0,
+      "onchainProb": 0.355,
+      "bookProb": 0.3573,
+      "calibroProb": 0.4175,
+      "naiveProb": 0.4014,
+      "calibroBrier": 0.17430625,
+      "naiveBrier": 0.16112195999999998,
+      "marketBrier": 0.126025,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3598,
+          "txDigest": "B9rmn3mYtpiRPV9Kgm81YtefVsoCLf8si2eXmpYqELfK"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.4745,
+          "txDigest": "2mwCnMura4d5QKUXagZ21PeAb8wVNr3j9VAjawSBJ1JT"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.37,
+          "txDigest": "2zeh92tgZc4Z2dSoc9pe46yGcuD6EjExDCT736CG6LUB"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "YES@ONCHAIN $60.56",
+      "pnlUsd": -60.56,
+      "thesisBlobId": "YjlwDbJzWB1bV_pNvcf9RCd52WuwFUMS_vlGPanbSOo",
+      "postMortemBlobId": "YZO4JXCazzLqFRgCNpNrd-WBYRovb_URBtMWH6pog-Y",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 29,
+      "marketId": "poly-nba-6380777",
+      "domain": "NBA",
+      "title": "Pacers vs. Grizzlies",
+      "asOf": "2026-11-05T00:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-ind-mem-2026-11-04",
+      "outcome": 1,
+      "onchainProb": 0.315,
+      "bookProb": 0.331,
+      "calibroProb": 0.2964,
+      "naiveProb": 0.3071,
+      "calibroBrier": 0.49505296,
+      "naiveBrier": 0.4801104100000001,
+      "marketBrier": 0.46922500000000006,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3432,
+          "txDigest": "FRTZnGVoN8kQEg1CcgfHMZjDZjavypdcHAVVS49sve4X"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.2632,
+          "txDigest": "CPWFHyhbWhxAVVrPyH3Hc4bV8TRN8D2icMbTasXT8dAN"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.315,
+          "txDigest": "6VW6Pn7JHPiHRXpZgwyfmuposUcgUq1hAtS2SDMjHBFz"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "FRrn7VBZvNarNU5mtBZVa-wVrhRHsQk9wex65OAMaLg",
+      "postMortemBlobId": "IeTNzB-So7mCH3ABgGQ4OAGw_GgwMDHEOPAzrf_DHmo",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 30,
+      "marketId": "poly-nba-6380786",
+      "domain": "NBA",
+      "title": "Timberwolves vs. Rockets",
+      "asOf": "2026-11-05T01:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-min-hou-2026-11-04",
+      "outcome": 1,
+      "onchainProb": 0.295,
+      "bookProb": 0.2922,
+      "calibroProb": 0.3379,
+      "naiveProb": 0.3371,
+      "calibroBrier": 0.43837641000000005,
+      "naiveBrier": 0.43943641000000006,
+      "marketBrier": 0.4970250000000001,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.3121,
+          "txDigest": "BVB2MhfzdsKdsJKscHqvXV2pAx8qdxdhcDC4xJE4fccK"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.3991,
+          "txDigest": "HfXTaS5vYLNHN6yGvB2TrMCRYdhXgz2iQqQwjSeeXALR"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.3,
+          "txDigest": "G7tEVNej8z5yV5vvbcHJvWmap8JWxWNcdndGVquW6ncV"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "YES@ONCHAIN $38.03",
+      "pnlUsd": 90.89,
+      "thesisBlobId": "0R4EyM4wakrrQ8EmgvwhNKG36bggjHC0wFrqwA64QHc",
+      "postMortemBlobId": "m4hl6sHBU9zN46Ky6vZfAbDsa_scWugb9G_-9DTY0s4",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 31,
+      "marketId": "poly-nba-6380792",
+      "domain": "NBA",
+      "title": "Trail Blazers vs. Suns",
+      "asOf": "2026-11-05T01:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-por-phx-2026-11-04",
+      "outcome": 1,
+      "onchainProb": 0.585,
+      "bookProb": 0.5729,
+      "calibroProb": 0.5972,
+      "naiveProb": 0.5889,
+      "calibroBrier": 0.16224784000000003,
+      "naiveBrier": 0.16900321000000001,
+      "marketBrier": 0.17222500000000002,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.5791,
+          "txDigest": "CAxS14Yn6Q4XkUL56MKG2SWGNXnhJ3C4hEVsSpqwXG5X"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.6026,
+          "txDigest": "GW4b3YtyEsd3gZyVZZGYcNnU23X4iy5E85X94mDhdhuN"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.585,
+          "txDigest": "HaysD6gG672a38SHbMm4xUDK2dAuYcMtu9oHGcrFZA7B"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "_fnrSwLZTbW6HF3Hc7GLCGCSTNzI9wnPZzhrvVea098",
+      "postMortemBlobId": "4m6LIutrYaIawg9d5NVL-NeZ_ZgjAHqz4S0PE75ImU4",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 32,
+      "marketId": "poly-nba-6380789",
+      "domain": "NBA",
+      "title": "Raptors vs. Nuggets",
+      "asOf": "2026-11-05T01:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-tor-den-2026-11-04",
+      "outcome": 0,
+      "onchainProb": 0.365,
+      "bookProb": 0.3689,
+      "calibroProb": 0.3595,
+      "naiveProb": 0.3596,
+      "calibroBrier": 0.12924025,
+      "naiveBrier": 0.12931215999999998,
+      "marketBrier": 0.13322499999999998,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.382,
+          "txDigest": "BpeVjX8nAqyiBRzXFZfWa1kdqEx1SRexUtLdLn3WrRQ6"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.3369,
+          "txDigest": "H5VsNetghK7RjUEpVSHReeRrc1QDLUSAZZgK8Phih4DL"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.36,
+          "txDigest": "2tUMhbSiQtgy3E5WFya4YQM6j9Lf98szeMTEN7ybarrH"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "DXZgOtdtPe5eSVbB-KInOzewpuuhyTJD88j36sswtlU",
+      "postMortemBlobId": "NFL-TRv-H3FEk-MYCp__XpXr5pIxgIOmC10pc0Ky9r8",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 33,
+      "marketId": "poly-nba-6380795",
+      "domain": "NBA",
+      "title": "Mavericks vs. Spurs",
+      "asOf": "2026-11-05T02:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-dal-sas-2026-11-04",
+      "outcome": 0,
+      "onchainProb": 0.165,
+      "bookProb": 0.1721,
+      "calibroProb": 0.1589,
+      "naiveProb": 0.1536,
+      "calibroBrier": 0.025249210000000005,
+      "naiveBrier": 0.023592959999999996,
+      "marketBrier": 0.027225000000000003,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.1221,
+          "txDigest": "8c7rRVAX8iCQNDv7SHEragYkf4sdtXbRU4kTzLAK9fEP"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.1737,
+          "txDigest": "9cmKWCJsdMX6mAgg8gqSWHgvfbv1xeHYuZnvUkCuiDBL"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.165,
+          "txDigest": "EDWcgoqTjm5JL8J8Crg4Rv1xFy48U9caGhnNUo9MFYzX"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "9d8ba6I8p7CDXDn4B3UzVH8P0x6BUGi5L02Iu8gpEIg",
+      "postMortemBlobId": "ncLE4YUvw3m9iaCDUOocq0QjRN9zDHYN8z1HhzP3O8U",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 34,
+      "marketId": "poly-nba-6380798",
+      "domain": "NBA",
+      "title": "Lakers vs. Kings",
+      "asOf": "2026-11-05T02:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-lal-sac-2026-11-04",
+      "outcome": 1,
+      "onchainProb": 0.835,
+      "bookProb": 0.8321,
+      "calibroProb": 0.8393,
+      "naiveProb": 0.8343,
+      "calibroBrier": 0.025824489999999985,
+      "naiveBrier": 0.027456489999999986,
+      "marketBrier": 0.027225000000000013,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.8352,
+          "txDigest": "76KEZsrDRWwnV9yVtadrMUz3qvTo7UVXm33CjrJSwh7x"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.8328,
+          "txDigest": "DnwgNGZQVPjoqvg8U9L3zUFpWPRqTFtJk9gFDcr1CuPc"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.835,
+          "txDigest": "DyqACnTKQJHtXhysVCAugerDrdTfStPfZy1adoK4MEap"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "NHC30Nkf2gYCfBeDfniwBJeZGSpprJq9H2sJp8pNOQ8",
+      "postMortemBlobId": "dyNBJbpZvCBU7E0HpDOEiK7hW_eX3dgxOpZGd-rkk74",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 35,
+      "marketId": "poly-nba-6380801",
+      "domain": "NBA",
+      "title": "Heat vs. Clippers",
+      "asOf": "2026-11-05T03:25:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-mia-lac-2026-11-04",
+      "outcome": 1,
+      "onchainProb": 0.665,
+      "bookProb": 0.6573,
+      "calibroProb": 0.6761,
+      "naiveProb": 0.6688,
+      "calibroBrier": 0.10491120999999998,
+      "naiveBrier": 0.10969344000000003,
+      "marketBrier": 0.11222499999999998,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.6679,
+          "txDigest": "FFTkGRbTR5r2HjdkJnhujLNekgaRwNYxkRm6n6282rac"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.6686,
+          "txDigest": "HzMeXVGmSEZm6m3jbftZseWTnFMBRHLvEQq2UhxAV5qX"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.67,
+          "txDigest": "Cwif4DkJukzz5yJ9fvSBtGjy2hVNvuBCztYYumYfYDS2"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "HEeLfqjC8K3g4rEIDIi-hhDRkJ8brJ5vGBuA3O_SGTA",
+      "postMortemBlobId": "r45u80Q_Zp-IepthNccWfC8KlCrEs6Ae2qpccWVmcT4",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 36,
+      "marketId": "poly-epl-6104883",
+      "domain": "EPL",
+      "title": "Will Everton FC win on 2026-11-06?",
+      "asOf": "2026-11-06T19:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/epl-eve-cov-2026-11-06-eve",
+      "outcome": 1,
+      "onchainProb": 0.575,
+      "bookProb": 0.5735,
+      "calibroProb": 0.5823,
+      "naiveProb": 0.5772,
+      "calibroBrier": 0.17447328999999998,
+      "naiveBrier": 0.17875983999999995,
+      "marketBrier": 0.18062500000000004,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.5744,
+          "txDigest": "2NDKpSXbyzXpiXmxGXbu6YfMkkzCpkEqMLKTCmd47e1P"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.58,
+          "txDigest": "BcBRz89GqyyND8Sho9Nq5Q4rmNZFaPReCy2bRJpsrniv"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled EPL Brier 0.307 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "xwalKbtfKjDaMPtTwQ1Ea6IHj6r2LUCmcWLOGXQCjr4",
+      "postMortemBlobId": "u6Vwgp2nocGb2crlDCbdrmQVdYJVAG1zDSc1H3lt86Y",
+      "calibrationBlobIds": [],
+      "status": "ALREADY_ON_WALRUS"
+    }
+  ],
+  "heldOut": [
+    {
+      "marketId": "poly-nba-6409790",
+      "title": "Heat vs. Warriors",
+      "asOf": "2026-11-06T02:55:00.000Z"
+    },
+    {
+      "marketId": "poly-nba-6409787",
+      "title": "Magic vs. Suns",
+      "asOf": "2026-11-06T01:55:00.000Z"
+    }
+  ],
+  "x402Payments": [
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-epl-5852347",
+      "txDigest": "6NBv24PiUEqycHN3uzhDAyXF41r6QEEZvBUz89e63Mpe",
+      "checkpoint": "342448194"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-epl-5852347",
+      "txDigest": "AM4U3Hog7ZQPpynZrDaUsnmogNwPu4ogbjSYuuZVgfoD",
+      "checkpoint": "342448206"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-epl-5852152",
+      "txDigest": "FiJa4jqfRsYbAL6KxyoSBZxmwVKCpivQTEDY6oh6Sxu1",
+      "checkpoint": "342448583"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-epl-5852152",
+      "txDigest": "2Dm3fb4VXEypTchPBSiWn6RDVAH3vZM9F5VgB1ydNGra",
+      "checkpoint": "342448598"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-epl-5852152",
+      "txDigest": "GRgo1Ty2ukwrep4Q4ndnkmT2d6VLjeUyKUvxKLyiE4a9",
+      "checkpoint": "342448609"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-ufc-5839774",
+      "txDigest": "9Fx8BMEDApjcVF5nUdwa2cQjQ9CrnoujJBgXK7XCR6G3",
+      "checkpoint": "342449052"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-ufc-5839774",
+      "txDigest": "GEbEJHNFPaEk1MdCJsyV9dvjAeoPg9u1Uj4cNwZjHPBs",
+      "checkpoint": "342449067"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-ufc-5839774",
+      "txDigest": "Go8dbwTzgEGM49sg7uHKqbkJJDJg21qHKpXtVMaUgLpR",
+      "checkpoint": "342449091"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-ufc-5839755",
+      "txDigest": "9UvRmX7SiTDW55tKqvQejFgoSE5PjWMuwd9Xnd1ZWZgp",
+      "checkpoint": "342449504"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-ufc-5839755",
+      "txDigest": "AcApF7D615n55t6ShjeU2Q5BjhhfNr2d4m2BkXY9GQ77",
+      "checkpoint": "342449516"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-ufc-5839755",
+      "txDigest": "6TLegu1pnqD6eZHBUzWfjEWyhk7Lu4ENeG6ktHSWb5Xh",
+      "checkpoint": "342449530"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293056",
+      "txDigest": "CuZMvJphRe9scE5tyXwB3WQhe1TMKuKtrqWLB1GWhN4h",
+      "checkpoint": "342449930"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293056",
+      "txDigest": "A2SfH4vsJmZzw3WSndzQjzS1hjr9ZQ4zy9ig8MZ5cmK",
+      "checkpoint": "342449945"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6293056",
+      "txDigest": "qWFi1j6tX2CmMWuFDGqn9cTNDdxV3meWLZp5wVz4NDK",
+      "checkpoint": "342449957"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293056",
+      "txDigest": "H9u2nabv1AB8Ka4weZMSz2n5sj61FahzSzpAzkcmXuBN",
+      "checkpoint": "342449967"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-nba-6293056",
+      "txDigest": "3yM6oPmPM168XTp1jEwhzKbYwMYSpEnmWMoxyG9AFDGj",
+      "checkpoint": "342449980"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-nba-6293053",
+      "txDigest": "GYi7bihovKjAUrvcEjFuKHRPhi7iQiM9gXwEqaXyiPqd",
+      "checkpoint": "342450428"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293053",
+      "txDigest": "5Xx8y613TUzWhc3rpmrVFBx1RDmzJ97vqCdrDMX7VUgJ",
+      "checkpoint": "342450443"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293053",
+      "txDigest": "DDpBgfkjiHdoWGdvAwtm4fbD2C2J9sJaNLAaPS2Qx6KA",
+      "checkpoint": "342450455"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6293053",
+      "txDigest": "AfJXYER6g7RjpSrTKDbFeZpv32tK5Q2fbzhHAsZpiuBN",
+      "checkpoint": "342450467"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293053",
+      "txDigest": "45ASPuNx8cEkE88C8WM1YQCuXcEE5UFa1DdhgxmZ8gae",
+      "checkpoint": "342450479"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293062",
+      "txDigest": "G2LXcnLf3wA5ZCjbRuJhRbCBXrzTViVwCeKrXhXrPbFc",
+      "checkpoint": "342450895"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6293062",
+      "txDigest": "BFHqCiVekJshxznvKRcWPFPdS6J7TLa1XLtXmPT6VWmo",
+      "checkpoint": "342450910"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293062",
+      "txDigest": "A8qYEbAuKBRgbAvbeEYBV2k6yQEaGwZzV5ziNDtAmmWA",
+      "checkpoint": "342450922"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293062",
+      "txDigest": "4N5X6kS7wEf9WEsqyrT8einkX797MftVRrwWo6tktkfZ",
+      "checkpoint": "342450936"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293059",
+      "txDigest": "AkXF8161QihZiC8g46LncdXHwTHfjSffWE7ELFVeGnUe",
+      "checkpoint": "342451299"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293059",
+      "txDigest": "8EbeSt4hf7zAxGxxahvsAaGBNqNM5FZG4vMaw9qmfoR4",
+      "checkpoint": "342451312"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293059",
+      "txDigest": "GQUo5Bv5nyJNPjw7NA8PbEZN7Hx8YF3593N3LRKiTMvB",
+      "checkpoint": "342451327"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6293059",
+      "txDigest": "F7KVbNAFSF4WRG9MSnD7FsotpRWPkULveztrkNSNYVe1",
+      "checkpoint": "342451338"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-nba-6293059",
+      "txDigest": "ABDdqjpwL7wENPrArofJtrNxEoL7U7N4mSZUR1oQ1pHw",
+      "checkpoint": "342451351"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293065",
+      "txDigest": "5zWPAdZ1AkZtFhsRz5yjYQTUsfvmnEczoJsAecj6GiZG",
+      "checkpoint": "342451749"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293065",
+      "txDigest": "Hk9zdmxGZ3JR5tzYdMELjndiUGSgneY3dmArTshF4zLe",
+      "checkpoint": "342451761"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6293065",
+      "txDigest": "DnbBAGoAMGj6K8zuqGbtGfJnQfPNDXMb7nYvrCxoCgDh",
+      "checkpoint": "342451776"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293065",
+      "txDigest": "4ULbibxjJFjYeWNvKLXUZPP42HZB42Mf1e14qVyMURVU",
+      "checkpoint": "342451788"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6293074",
+      "txDigest": "Fy3ppzCUYyjpiipn3LcRubTTDhvzXEVKeKUjTLRQX3Un",
+      "checkpoint": "342452184"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293074",
+      "txDigest": "5e2Et4MFL23i5TLSbb4Xkj2JiqiHrm8CFbT8HGwZ5Byn",
+      "checkpoint": "342452198"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293074",
+      "txDigest": "AjzBnnP98nuc4ZpwYFoBGKtQYZ7VrC4PWbnuemvjZu5W",
+      "checkpoint": "342452209"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293074",
+      "txDigest": "5MrRVbELmZ8F3ED22bmmGcawrx8Am73yj8h57rEkxEx2",
+      "checkpoint": "342452222"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-nba-6293074",
+      "txDigest": "JAdRw3w5mZsjrzcrFGxc5pay4DE5YcZcjYVMxTFBzrAK",
+      "checkpoint": "342452238"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293071",
+      "txDigest": "E5smWxfxn1qrbnmQxBwiuTP7YQzX1ZtHiCcFk6U9hBrk",
+      "checkpoint": "342452636"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293071",
+      "txDigest": "FBxEU3mMMb7hYuzCrPVviJCpCyLRBAsZFmd7eJB3WabS",
+      "checkpoint": "342452651"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293071",
+      "txDigest": "FqzpfsnYVzU1EatceAgdw1dcYWP4cbd1Azw4mdzVKncf",
+      "checkpoint": "342452666"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6293068",
+      "txDigest": "DUMTGoLRst5rNyfPjyEov6uvAd4jmqxVeMBae2JVGrQz",
+      "checkpoint": "342453050"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6293068",
+      "txDigest": "9KZ3XqNwg6UZA895E7gEsADQTeXF47PaGK9FHNCN6JYP",
+      "checkpoint": "342453066"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6293068",
+      "txDigest": "5QVjwsPTcStUzn2TjXsixBH9jrzj44j3U6SwMQmGnfzr",
+      "checkpoint": "342453076"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6293068",
+      "txDigest": "CPHwmQYnopbhCwsELSUvTa2d1GMPphaMV7VLNZsQerth",
+      "checkpoint": "342453094"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-nba-6293068",
+      "txDigest": "CY9oWyihAAP8Y1b6NqSswZWYYN7dM6ccBwzVqDCvpASr",
+      "checkpoint": "342453103"
+    }
+  ],
+  "inventoryTotal": 216,
+  "namespaces": [
+    {
+      "name": "calibro:mandates",
+      "memoryCount": 1
+    },
+    {
+      "name": "calibro:calibration",
+      "memoryCount": 143
+    },
+    {
+      "name": "calibro:episodic",
+      "memoryCount": 72
+    }
+  ]
+}
