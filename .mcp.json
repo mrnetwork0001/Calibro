@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "tatumio": {
+      "command": "npx",
+      "args": ["-y", "@tatumio/blockchain-mcp"],
+      "env": {
+        "TATUM_API_KEY": "${TATUM_API_KEY}"
+      }
+    },
+    "memwal": {
+      "command": "npx",
+      "args": ["-y", "@mysten-incubation/memwal-mcp"]
+    }
+  }
+}
