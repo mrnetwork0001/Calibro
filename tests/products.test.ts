@@ -7,6 +7,7 @@ import { decodeX402Challenge, encodeX402PaymentProof, parseX402ChallengeHeaders 
 import { requirePayment, type PaywallConfig } from "../src/lib/x402/paywall";
 import { InMemoryReplayLedger } from "../src/lib/x402/replay-ledger";
 import { REPLAY_FIXTURES, syntheticSignal } from "./fixtures/synthetic-slate";
+import { digest, digestLabel } from "./fixtures/digest";
 
 const AGENT = "0x" + "aa".repeat(32);
 const BUYER = "0x" + "bb".repeat(32);
@@ -22,7 +23,7 @@ function cfg(over: Partial<PaywallConfig> = {}): PaywallConfig {
     ledger: new InMemoryReplayLedger(),
     verifier: {
       async verifyX402PaymentOnSui(p) {
-        const ok = p.txDigest.startsWith("GOOD") && p.expectedSender === BUYER && p.expectedRecipient === AGENT;
+        const ok = digestLabel(p.txDigest).startsWith("GOOD") && p.expectedSender === BUYER && p.expectedRecipient === AGENT;
         return {
           verified: ok,
           txDigest: p.txDigest,
@@ -50,9 +51,9 @@ describe("Forecast paywall (x402 product)", () => {
     expect(decodeX402Challenge(challenge.challengeId)?.amountRaw).toBe("10000000");
     expect(res.headers.get("www-authenticate")).toContain(`recipient="${AGENT}"`);
 
-    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: "GOOD1", payer: BUYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
+    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: digest("GOOD1"), payer: BUYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
     const paid = await requirePayment(new Request("http://x/api/forecast?marketId=poly-nba-1", { headers }), c);
-    expect(paid).toMatchObject({ paid: true, receipt: { txDigest: "GOOD1", payer: BUYER } });
+    expect(paid).toMatchObject({ paid: true, receipt: { txDigest: digest("GOOD1"), payer: BUYER } });
     const again = await requirePayment(new Request("http://x/api/forecast?marketId=poly-nba-1", { headers }), c);
     expect(again.paid).toBe(false);
   });
@@ -61,7 +62,7 @@ describe("Forecast paywall (x402 product)", () => {
     const c = cfg();
     const sig = await requirePayment(new Request("http://x/"), { ...cfg(), product: "sharp-steam" });
     const challenge = parseX402ChallengeHeaders((sig as { response: Response }).response.headers)!;
-    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: "GOOD2", payer: BUYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
+    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: digest("GOOD2"), payer: BUYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
     const res = await requirePayment(new Request("http://x/", { headers }), c);
     expect(res.paid).toBe(false);
     expect(await (res as { response: Response }).response.json()).toMatchObject({ error: expect.stringMatching(/different product/) });

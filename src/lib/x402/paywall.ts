@@ -7,6 +7,7 @@
  *           landed after the challenge ✓  → { paid: true, receipt }
  * Only real Sui Mainnet receipts are accepted.
  */
+import { isValidTransactionDigest } from "@mysten/sui/utils";
 import type { SuiPaymentVerificationResult } from "../tatum/sui-rpc";
 import type { X402Product } from "../types/calibro";
 import { createX402Challenge, decodeX402Challenge, parseX402PaymentHeader } from "./protocol";
@@ -112,6 +113,10 @@ export async function requirePayment(request: Request, cfg: PaywallConfig): Prom
   if (!termsOk) return challenge402("Challenge terms no longer match this server's payment configuration.");
   if (now.getTime() > Date.parse(challenge.expiresAt) + REDEEM_GRACE_MS) return challenge402("Challenge expired.");
   if (proof.mode !== "LIVE_MAINNET") return challenge402("Only Sui Mainnet receipts are accepted.");
+  // Checked locally so a malformed digest is a clean 402, not an upstream (Tatum) error.
+  if (!isValidTransactionDigest(proof.txDigest)) {
+    return challenge402("Malformed txDigest: expected a base58 Sui transaction digest (32 bytes).");
+  }
 
   const key = `sui:${proof.txDigest}`;
   let reserved: boolean;

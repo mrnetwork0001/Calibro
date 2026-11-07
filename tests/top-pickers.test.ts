@@ -8,6 +8,7 @@ import { requirePayment } from "../src/lib/x402/paywall";
 import { InMemoryReplayLedger } from "../src/lib/x402/replay-ledger";
 import { handleSignalRequest } from "../src/lib/x402/signal-gate";
 import { SuiX402Payer } from "../src/lib/x402/sui-payer";
+import { digest, digestLabel } from "./fixtures/digest";
 
 const A = "0x" + "a1".repeat(32);
 const B = "0x" + "b2".repeat(32);
@@ -92,7 +93,7 @@ describe("Split x402 payments", () => {
 
   it("the paywall verifies every share was credited, via the signed challenge", async () => {
     const verify = vi.fn(async (p: { txDigest: string; expectedRecipient: string; minAmountRaw: bigint; additionalCredits?: Array<{ recipient: string; minAmountRaw: bigint }> }) => ({
-      verified: p.txDigest === "GOOD",
+      verified: p.txDigest === digest("GOOD"),
       txDigest: p.txDigest,
       checkpoint: "1",
       recipientCreditedRaw: p.minAmountRaw,
@@ -114,7 +115,7 @@ describe("Split x402 payments", () => {
     const challenge = parseX402ChallengeHeaders((first as { response: Response }).response.headers)!;
     // Shares changed after the challenge (a new picker qualified): the signed shares still rule.
     const paid = await requirePayment(
-      new Request("http://x/", { headers: encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: "GOOD", payer: AGENT, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
+      new Request("http://x/", { headers: encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: digest("GOOD"), payer: AGENT, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
       { ...cfg, splits: [{ recipient: C, amountRaw: "2000000" }] }
     );
     expect(paid).toMatchObject({ paid: true, receipt: { splits } });
@@ -164,7 +165,7 @@ describe("Split x402 payments", () => {
     expect(first.status).toBe(402);
     const challenge = parseX402ChallengeHeaders(first.headers)!;
     const res = await handleSignalRequest(
-      new Request(url, { headers: encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: "TX1", payer: AGENT, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
+      new Request(url, { headers: encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: digest("TX1"), payer: AGENT, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
       "top-pickers",
       deps
     );

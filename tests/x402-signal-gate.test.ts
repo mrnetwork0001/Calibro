@@ -5,6 +5,7 @@ import { SyndicateEngine } from "../src/lib/orchestrator/syndicate-engine";
 import { computeSpecialistSignal, specialistModel } from "../src/lib/specialists/models";
 import type { SuiPaymentVerificationResult } from "../src/lib/tatum/sui-rpc";
 import { HttpX402SignalProvider, type TapeEvent } from "../src/lib/x402/http-signal-provider";
+import { digest, digestLabel } from "./fixtures/digest";
 import {
   createX402Challenge,
   decodeX402Challenge,
@@ -32,7 +33,7 @@ function deps(overrides: Partial<SignalGateDeps> = {}): SignalGateDeps & { verif
       async verifyX402PaymentOnSui(p): Promise<SuiPaymentVerificationResult> {
         state.verifyCalls++;
         d.verifyCalls = state.verifyCalls;
-        const ok = p.txDigest.startsWith("GOOD") && p.expectedSender === PAYER;
+        const ok = digestLabel(p.txDigest).startsWith("GOOD") && p.expectedSender === PAYER;
         return {
           verified: ok,
           txDigest: p.txDigest,
@@ -82,12 +83,12 @@ describe("HTTP 402 signal gate (server)", () => {
   it("serves a signed signal after Tatum verification, then rejects the same digest (anti-replay)", async () => {
     const d = deps();
     const challenge = await challengeFor(d);
-    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: "GOOD1", payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
+    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: digest("GOOD1"), payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
 
     const ok = await handleSignalRequest(new Request(url(), { headers }), "sharp-steam", d);
     expect(ok.status).toBe(200);
     const body = (await ok.json()) as PaidSignalBody;
-    expect(body.receipt).toMatchObject({ receiptMode: "LIVE_MAINNET", txDigest: "GOOD1", verifiedVia: "tatum-sui-mainnet-rpc", checkpoint: "123456" });
+    expect(body.receipt).toMatchObject({ receiptMode: "LIVE_MAINNET", txDigest: digest("GOOD1"), verifiedVia: "tatum-sui-mainnet-rpc", checkpoint: "123456" });
     expect(body.signal.specialistId).toBe("sharp-steam");
     expect(verifyServerPayload({ signal: body.signal, receipt: body.receipt }, body.signature)).toBe(true);
     expect(ok.headers.get("x-payment-response")).toBeTruthy();
@@ -101,11 +102,24 @@ describe("HTTP 402 signal gate (server)", () => {
   it("releases the digest when on-chain verification fails, and reports why", async () => {
     const d = deps();
     const challenge = await challengeFor(d);
-    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: "BAD1", payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
+    const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: digest("BAD1"), payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
     const res = await handleSignalRequest(new Request(url(), { headers }), "sharp-steam", d);
     expect(res.status).toBe(402);
     expect(((await res.json()) as { error: string }).error).toMatch(/Payment not verified: Recipient credited 0/);
-    expect(await d.ledger.has("sui:BAD1")).toBe(false);
+    expect(await d.ledger.has(`sui:${digest("BAD1")}`)).toBe(false);
+  });
+
+  it("rejects a malformed txDigest with a clean 402, without calling Tatum or touching the ledger", async () => {
+    const d = deps();
+    const challenge = await challengeFor(d);
+    for (const bad of ["1111111111111111111111111111111111111111111", "not-a-digest", "0xabc"]) {
+      const headers = encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: bad, payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" });
+      const res = await handleSignalRequest(new Request(url(), { headers }), "sharp-steam", d);
+      expect(res.status).toBe(402);
+      expect(((await res.json()) as { error: string }).error).toMatch(/Malformed txDigest/);
+      expect(await d.ledger.has(`sui:${bad}`)).toBe(false);
+    }
+    expect(d.verifyCalls).toBe(0);
   });
 
   it("rejects tampered challenges and challenges for another specialist or market", async () => {
@@ -116,7 +130,7 @@ describe("HTTP 402 signal gate (server)", () => {
 
     const send = (challengeId: string, id = "sharp-steam") =>
       handleSignalRequest(
-        new Request(url(id), { headers: encodeX402PaymentProof({ challengeId, txDigest: "GOOD2", payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
+        new Request(url(id), { headers: encodeX402PaymentProof({ challengeId, txDigest: digest("GOOD2"), payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
         id,
         d
       );
@@ -134,7 +148,7 @@ describe("HTTP 402 signal gate (server)", () => {
       now: new Date(Date.now() - 60 * 60_000),
     });
     const res = await handleSignalRequest(
-      new Request(url(), { headers: encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: "GOOD3", payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
+      new Request(url(), { headers: encodeX402PaymentProof({ challengeId: challenge.challengeId, txDigest: digest("GOOD3"), payer: PAYER, network: "sui:mainnet", mode: "LIVE_MAINNET" }) }),
       "sharp-steam",
       d
     );
@@ -188,7 +202,7 @@ describe("HttpX402SignalProvider (agent buyer) end to end", () => {
       address: PAYER,
       async pay(challenge) {
         paid.push(challenge.challengeId);
-        return { txDigest: `GOOD-${paid.length}`, payer: PAYER, checkpoint: "999" };
+        return { txDigest: digest(`GOOD-${paid.length}`), payer: PAYER, checkpoint: "999" };
       },
     };
     const tape: TapeEvent[] = [];
@@ -203,7 +217,7 @@ describe("HttpX402SignalProvider (agent buyer) end to end", () => {
     expect(ev.acquisitionErrors).toEqual([]);
     expect(ev.acquired).toHaveLength(4);
     expect(paid).toHaveLength(4);
-    expect(ev.thesis.signalsUsed.every((s) => s.x402Mode === "LIVE_MAINNET" && s.x402TxDigest?.startsWith("GOOD-"))).toBe(true);
+    expect(ev.thesis.signalsUsed.every((s) => s.x402Mode === "LIVE_MAINNET" && digestLabel(s.x402TxDigest ?? "").startsWith("GOOD-"))).toBe(true);
     const kinds = tape.map((t) => t.kind);
     expect(kinds.filter((k) => k === "CHALLENGE_402")).toHaveLength(4);
     expect(kinds.filter((k) => k === "VERIFIED")).toHaveLength(4);
@@ -216,7 +230,7 @@ describe("HttpX402SignalProvider (agent buyer) end to end", () => {
   it("refuses to pay a challenge that asks more than the VoI gate approved", async () => {
     const d = deps({ amountRaw: "9000000" }); // server asks 0.009 SUI
     let paidCount = 0;
-    const payer: X402Payer = { address: PAYER, pay: async () => ({ txDigest: `GOOD-${++paidCount}`, payer: PAYER }) };
+    const payer: X402Payer = { address: PAYER, pay: async () => ({ txDigest: digest(`GOOD-${++paidCount}`), payer: PAYER }) };
     const engine = new SyndicateEngine({
       memory: new CalibroMemoryClient({ mode: "MOCK_SANDBOX" }),
       signals: new HttpX402SignalProvider({ baseUrl: "http://calibro.test", payer, fetchImpl: inProcessFetch(d) }),
@@ -239,7 +253,7 @@ describe("HttpX402SignalProvider (agent buyer) end to end", () => {
         maxInFlight = Math.max(maxInFlight, inFlight);
         await new Promise((r) => setTimeout(r, 5));
         inFlight--;
-        return { txDigest: `GOOD-${Math.random()}`, payer: PAYER };
+        return { txDigest: digest(`GOOD-${Math.random()}`), payer: PAYER };
       },
     };
     const engine = new SyndicateEngine({
