@@ -64,13 +64,13 @@ The buyer also protects itself. It refuses any challenge asking for more, or for
 
 ## Memory that actually changes behaviour
 
-Calibro writes compact records, never chat logs. Each one has a semantic header, which the relayer embeds, and a JSON payload, which is parsed exactly after SEAL decryption. Records go into three namespaces: `calibro:episodic` (theses and post-mortems), `calibro:calibration` (one checkpoint per specialist × league per settlement) and `calibro:mandates`.
+Calibro writes compact records, never chat logs. Each one has a semantic header, which the relayer embeds, and a JSON payload, which is parsed exactly after SEAL decryption. Calibro's own records go into three namespaces: `calibro:episodic` (theses and post-mortems), `calibro:calibration` (one checkpoint per specialist × league per settlement) and `calibro:mandates`. A fourth, `calibro:picks`, holds users' picks and scorecards (more on that below).
 
 Two details took real debugging:
 
 - **A single recall stops being complete.** The relayer returns at most 100 hits, and `sort: "recent"` only re-sorts a semantic window. Past 100 calibration checkpoints, one namespace-wide recall silently dropped whole sources. Calibro now recalls each (source, league) pair with its own query, and the learning timeline replays the settled post-mortems through the engine's own update function, which reproduces the stored checkpoints exactly.
 - **Semantic recall is not an exact lookup.** Finding "the thesis for market `nba-game-11`" failed once there were about 20 near-identical records. The id's tokens appear all over the other records' numbers. Every episodic header now carries a hashed market tag, and the lookup queries by that tag and then checks the parsed `marketId`.
-- **`sort: "recent"` re-sorts a semantic window by write time before truncating.** With a small `limit`, newer checkpoints of *other* specialists crowded the one I wanted off the page as soon as leagues were interleaved. Calibro now recalls the calibration namespace at the relayer's cap of 100 and picks the newest checkpoint per pair in code. That's exact up to 100 checkpoints; past that, the ledger needs a compaction snapshot.
+- **`sort: "recent"` re-sorts a semantic window by write time before truncating.** With a small `limit`, newer checkpoints of *other* specialists crowded the one I wanted off the page as soon as leagues were interleaved. That is the other reason each (source, league) pair gets its own query. It is exact up to roughly 50 settlements per league; past that, the ledger needs a compaction snapshot.
 
 Settlement is idempotent. Re-settling a market is a no-op, and a crash between the calibration write and the post-mortem write can't double-count, because each checkpoint records the market that produced it.
 
@@ -84,15 +84,15 @@ The first version of Calibro trained on synthetic games with simulated vendors o
 
 ## Results (real resolved games, live on Mainnet)
 
-I trained Calibro live: every signal bought with a real Sui payment and verified through Tatum, every thesis, post-mortem and calibration checkpoint written to Walrus. Across 36 real games resolved between 31 October and 6 November 2026 (22 NBA, 7 EPL, 7 UFC), replayed in order:
+I trained Calibro live: every signal bought with a real Sui payment and verified through Tatum, every thesis, post-mortem and calibration checkpoint written to Walrus. As of 7 November 2026 the training run covers 37 real games played between 31 October and 7 November 2026 (23 NBA, 7 EPL, 7 UFC):
 
 | | Mean Brier |
 |---|---|
 | Polymarket price | 0.181 |
 | Calibro | 0.188 |
-| Equal-weight average | 0.187 |
+| Equal-weight average | 0.186 |
 
-The interesting part is what Calibro learned. HypeContrarian's Brier crossed the 0.265 cutoff after four games in each league (0.31 to 0.35), and Calibro refused to pay it 24 times from then on. The other sources stayed between 0.14 and 0.20, close to the market, and kept being bought: 119 paid signals, each with a Sui digest. KalshiCrowd and ManifoldCrowd joined for the last 12 games and earned *paid* status in the NBA after their four exploration games.
+The interesting part is what Calibro learned. HypeContrarian's Brier crossed the 0.265 cutoff after four games in each league (0.31 to 0.35), and Calibro refused to pay it 25 times from then on (19 NBA, 3 EPL, 3 UFC). The other sources stayed between 0.14 and 0.22, close to the market, and kept being bought: 124 paid signals, each with a Sui digest. KalshiCrowd and ManifoldCrowd were added late (9 and 8 of the 37 games) and earned *paid* status in the NBA after their four exploration games.
 
 It did not beat the market. Paper P&L on a $2,500 bankroll was −$313: on efficient markets, a small "edge" from sources that mostly echo the price is noise. I'm reporting that rather than tuning thresholds on the same games until the number turns green.
 
@@ -114,7 +114,15 @@ The track brief asks for an app that remembers its users. Two features make Cali
 
 ## Watching it learn
 
-The learning timeline replays the calibration checkpoints on Walrus, one settlement at a time. Dragging the slider shows HypeContrarian flip from *exploring* to *vetoed* at the fourth game in each league, and the other sources' weights shift as their records diverge. Every change links to the Walrus blob that caused it. Status and weights come from the engine's own gate and weighting functions, so the replay can't drift from what the agent actually did.
+The learning timeline replays the settled post-mortems on Walrus through the engine's own update function, one settlement at a time; a test checks that the replay reproduces the stored calibration checkpoints exactly. Dragging the slider shows HypeContrarian flip from *exploring* to *vetoed* at the fourth game in each league, and the other sources' weights shift as their records diverge. Each step links to its post-mortem blob. Status and weights come from the engine's own gate and weighting functions, so the replay can't drift from what the agent actually did.
+
+## Open to anyone
+
+Three things make the record checkable without trusting me or my wallet:
+
+- **The Record tab** (`/app/record`, backed by `GET /api/record`) lists every settled game straight from Walrus: Calibro's probability against Polymarket's, both Brier scores, each paid source with its Suiscan link, each refused source with the reason, and the post-mortem blob on Walruscan.
+- **A preview for visitors.** Live evaluation spends real SUI, so it's limited to the operator. On a resolved game, anyone can press Preview: `POST /api/evaluate/preview` runs the same engine against Calibro's real recalled record with the signals computed in-process, pays nothing and writes nothing, and says so on screen. If Calibro evaluated that game on Mainnet, the recorded thesis, post-mortem and payment digests appear beside it.
+- **Honest reads.** Recalling and decrypting a full track record takes the relayer 15 to 25 seconds, and its preflight occasionally stalls. The Walrus-backed views go through a shared cache (Upstash Redis when deployed, a file locally) that a cron job refreshes every 30 minutes. When the relayer is slow, the last good value is served with its timestamp; when nothing is cached, the panel says what failed and retries. An empty record is never shown in place of an error.
 
 ## Calibro as a vendor
 
@@ -125,13 +133,13 @@ Calibro now sells its own calibrated forecast over the same 402 protocol, for 0.
 Everything below comes from relayer and Sui responses recorded in `docs/mainnet-memory-proof.json`.
 
 - Walrus Memory account: [`0x47a5e5519693665084fd119d8f0c8802c7a331d8d80b71298183e80af833c0ec`](https://suiscan.xyz/mainnet/object/0x47a5e5519693665084fd119d8f0c8802c7a331d8d80b71298183e80af833c0ec)
-- Inventory after training: **216 memories**: 72 in `calibro:episodic` (36 theses + 36 post-mortems), 143 in `calibro:calibration`, 1 in `calibro:mandates`.
+- Inventory as of 7 November 2026: **232 memories**: 76 in `calibro:episodic` (theses and post-mortems), 155 in `calibro:calibration`, 1 in `calibro:mandates`.
 - Example blobs (one market, *Will Hull City AFC win on 2026-10-31?*):
   - thesis [`Z8seB8VSOkxSR6t8USdZAYnp42R3QdjzvZqt6Enhin0`](https://walruscan.com/mainnet/blob/Z8seB8VSOkxSR6t8USdZAYnp42R3QdjzvZqt6Enhin0)
   - post-mortem [`JdGYWx9D35MyD96MN2FOH_dp21FXMuRW_p76L_frN7o`](https://walruscan.com/mainnet/blob/JdGYWx9D35MyD96MN2FOH_dp21FXMuRW_p76L_frN7o)
   - calibration checkpoint [`hK1KBaCwWiPRe0rE8278wfjxls-3nJKYxr5GVB8kyMo`](https://walruscan.com/mainnet/blob/hK1KBaCwWiPRe0rE8278wfjxls-3nJKYxr5GVB8kyMo)
-- x402 payment digests verified through Tatum (119 in total), for example [`6NBv24Pi…`](https://suiscan.xyz/mainnet/tx/6NBv24PiUEqycHN3uzhDAyXF41r6QEEZvBUz89e63Mpe), [`AM4U3Hog…`](https://suiscan.xyz/mainnet/tx/AM4U3Hog7ZQPpynZrDaUsnmogNwPu4ogbjSYuuZVgfoD), [`FiJa4jqf…`](https://suiscan.xyz/mainnet/tx/FiJa4jqfRsYbAL6KxyoSBZxmwVKCpivQTEDY6oh6Sxu1).
-- An outside wallet buying Calibro's forecast for 0.01 SUI: [`6LdsBTha…`](https://suiscan.xyz/mainnet/tx/6LdsBThaAGd1VhkcfVXKwwS98qJr5XGypwuwmZpUnNY4). To fill it, Calibro paid five sources over x402 and vetoed HypeContrarian (recalled NBA Brier 0.310).
+- x402 payment digests verified through Tatum (124 in the training run), for example [`6NBv24Pi…`](https://suiscan.xyz/mainnet/tx/6NBv24PiUEqycHN3uzhDAyXF41r6QEEZvBUz89e63Mpe), [`AM4U3Hog…`](https://suiscan.xyz/mainnet/tx/AM4U3Hog7ZQPpynZrDaUsnmogNwPu4ogbjSYuuZVgfoD), [`FiJa4jqf…`](https://suiscan.xyz/mainnet/tx/FiJa4jqfRsYbAL6KxyoSBZxmwVKCpivQTEDY6oh6Sxu1).
+- A second wallet (our signal treasury, standing in for an outside agent) buying Calibro's forecast for 0.01 SUI: [`6LdsBTha…`](https://suiscan.xyz/mainnet/tx/6LdsBThaAGd1VhkcfVXKwwS98qJr5XGypwuwmZpUnNY4). To fill it, Calibro paid five sources over x402 and vetoed HypeContrarian (recalled NBA Brier 0.310).
 - Agent wallet [`0xe33f…7c82`](https://suiscan.xyz/mainnet/account/0xe33f666912d7e58ea5f86b25c37059b8c47e4dcfb83deadce4603c37e1267c82) · signal treasury [`0x5e2d…a450`](https://suiscan.xyz/mainnet/account/0x5e2d891a6c7da182d4618d383d2221b20ba171c1dcdfa836d207af8ceff3a450)
 
 ## Portable brain
@@ -147,5 +155,4 @@ A fresh process with no database and no `.env` prints the recalled ledger and ma
 - Deterministic re-exploration, so a vetoed source can earn its way back.
 - A minimum-edge threshold that accounts for Polymarket's spread, so Calibro passes instead of betting on noise.
 - Small-sample shrinkage of Brier scores, so one unlucky call doesn't zero a sharp source's weight.
-- Calibration snapshots, so recall stays exact past 100 checkpoints.
-- Feeding well-calibrated human pickers back in as paid sources, so the journal's best users earn from Calibro.
+- Calibration snapshots, so recall stays exact past roughly 50 settlements per league.
