@@ -1,32 +1,48 @@
-# Calibro — Submission & Demo Master Checklist
+# Calibro: submission checklist
 
-**Submission Deadline:** **November 10, 2026 @ 17:00 UTC** (`https://tatum.io/hackathon/total-recall`)
+**Deadline:** November 10, 2026, 17:00 UTC. Repo, demo and blog post are due then (`https://tatum.io/hackathon/total-recall`).
+**Targets:** Markets & Sports Prediction track; Best Walrus Memory; Best Use of Agent Payments.
 
-## 1. Mandatory Eligibility Gates
-- [ ] **Walrus Memory on Mainnet (`>= 10` memories):** Fund the agent wallet, run `npm run memwal:provision`, then `npm run train -- --server http://localhost:3004 --yes` to train on real resolved Polymarket games. It writes ~100 real SEAL-encrypted memories across `calibro:episodic`, `calibro:calibration` and `calibro:mandates` and `docs/mainnet-memory-proof.json`. Commit the proof file.
-- [ ] **Tatum Integration:**
-  - [ ] Live Sui Mainnet calls via Tatum's Sui GraphQL gateway `https://sui-mainnet.gateway.tatum.io/graphql` (`x-api-key`).
-  - [ ] Live SUI/USD & USDC/USD spot pricing via Tatum v4 Data API (`/v4/data/rate/symbol`).
-  - [ ] Initial telemetry/dislocation shell bootstrapped on `https://ai.tatum.io` (`docs/AI_TATUM_BOOTSTRAP_PROMPT.md`).
-- [ ] **Agent Payments (`x402` + `MPP` on Sui Mainnet):**
-  - [ ] Live `402 Payment Required` challenge (`WWW-Authenticate: Payment` + `X-Payment-Required`).
-  - [ ] Real Sui Mainnet micro-payment `txDigest` verified via Tatum Sui GraphQL `transaction(digest)`.
-- [ ] **Differentiators to show in the demo:**
-  - [ ] Pick journal (`/app/picks`): a wallet-signed pick sealed in `calibro:picks`, later graded with a scorecard and on the leaderboard.
-  - [ ] Learning timeline (terminal panel 5): drag to the 4th game in a league and show HypeContrarian flip to Vetoed, with the Walrus blob link.
-  - [ ] Calibro as a vendor: `npm run buy:forecast` buys the forecast over x402 from another wallet; show `/.well-known/x402`.
-  - [ ] Third-party voices (KalshiCrowd, ManifoldCrowd) in the calibration ledger; disagreement alerts in the matrix.
-  - [ ] CI badge green on GitHub; settlement workflow secrets (`CALIBRO_URL`, `CRON_SECRET`) set.
-- [ ] **Core Artifacts:**
-  - [ ] Public GitHub repository (`Apache-2.0`).
-  - [ ] Live deployed web app (Vercel) + 3-minute demo video.
-  - [ ] Published technical blog post (`docs/BLOG_POST.md` -> Dev.to / Medium).
+## 1. The hackathon's checklist
 
-## 2. 3-Minute Demo Video Arc (Designed for Maximum Judge Score)
-- **0:00 – 0:30 | The Problem:** Prediction agents have epistemic amnesia — they pay `x402` fees to noisy sources every session and treat uncalibrated Twitter scrapers the same as sharp line-movement models.
-- **0:30 – 1:15 | Tatum + `ai.tatum.io` + Live Dislocation Scan:** Show live Sui Mainnet checkpoint & SUI/USD rate via Tatum APIs, plus NBA/EPL/Crypto bookmaker vs on-chain implied probability spreads.
-- **1:15 – 2:10 | Cold Start vs. Total Recall (Hero Moment):**
-  - Show **Epoch 1 (Cold Start)**: Agent pays `x402` micro-fees to all 4 specialists (`25%` each).
-  - Trigger **Total Recall from Walrus Mainnet** on a held-out real game: Agent recalls `calibro:calibration`, **autonomously vetoes the `x402` payment** to `hype-contrarian` (recalled Brier above the 0.265 cutoff), pays the other specialists on Sui Mainnet, verifies each `txDigest` via Tatum's Sui GraphQL gateway, de-biases log-odds, and outputs a quarter-Kelly paper stake.
-- **2:10 – 2:45 | Post-Mortem Learning + Portable Brain Proof:** Settle a resolved market live against Polymarket's result -> watch Walrus Memory status (`pending -> running -> uploaded -> done`) mint a new Mainnet `blob_id` -> run `npx tsx scripts/portable-agent-demo.ts` in a blank terminal with zero local DB to prove instant cross-runtime memory portability.
-- **2:45 – 3:00 | Proof-of-Mainnet Audit Drawer:** Open the Walrus Inventory Drawer showing the live Mainnet `blob_id`s across all 3 namespaces.
+| Requirement | Status | Evidence |
+|---|---|---|
+| Walrus Memory integrated and writing on Mainnet | Done | Account `0x47a5e5519693665084fd119d8f0c8802c7a331d8d80b71298183e80af833c0ec`; every evaluation, settlement and pick writes to it |
+| Tatum RPC used for on-chain data | Done | Tatum's Sui GraphQL gateway for checkpoints, balances, x402 receipt verification, executing payments and verifying pick signatures; Tatum v4 for SUI/USD |
+| At least 10 memories on Mainnet | Done | 232 as of 7 Nov 2026 (76 episodic, 155 calibration, 1 mandates); `docs/mainnet-memory-proof.json` |
+| Published blog post (what it does, how it uses Tatum + Walrus, how it learned) | **To do** | `docs/BLOG_POST.md` is written; publish it and link it from the README |
+| Working demo and public repo | **To do** | Make the repo public, deploy, record the video |
+| Optional: built with Tatum AI Builder | Not pursued | Calibro wasn't built primarily with ai.tatum.io, so that bonus doesn't apply |
+
+## 2. Judging criteria and what covers them
+
+- **Walrus and Tatum integration (30%)**: four namespaces with SEAL-encrypted records that change behaviour (sources refused from their recalled Brier, weights from their record, a coach from the user's own picks); per-pair recall and replay; portable agent; Tatum for every on-chain read, payment execution and verification.
+- **Technical quality (30%)**: deterministic maths with tests, point-in-time pricing, idempotent settlement, receipt verification with anti-replay, shared read cache with honest stale/error states, CI (typecheck, tests, build) on every push.
+- **Creativity (20%)**: an agent that refuses to pay sources with a bad record; it sells its own forecast over x402; its best human pickers are paid in one split Sui transaction.
+- **Presentation (20%)**: README, blog post, Record tab with links for every game, the 3-minute video (`docs/DEMO_RUNBOOK_3MIN.md`), a deployed URL.
+- **Bonus**: a post on X or LinkedIn (tagging `@Tatum_io` and `@WalrusFoundation` is optional).
+
+## 3. Owner's steps, in order
+
+1. **Make the GitHub repo public** (Settings → General → Danger zone → Change visibility).
+2. **Create a free Upstash Redis database** and copy its REST URL and token.
+3. **Deploy to Vercel** with these environment variables:
+   - `MEMWAL_PRIVATE_KEY`, `MEMWAL_ACCOUNT_ID`, `TATUM_API_KEY`
+   - `CALIBRO_AGENT_SUI_PRIVATE_KEY`, `CALIBRO_SIGNAL_TREASURY_ADDRESS`
+   - `CALIBRO_X402_CHALLENGE_SECRET` (a long random string; without it each serverless instance would sign challenges with its own random key)
+   - `CALIBRO_ADMIN_TOKEN` (operator evaluate/settle), `CRON_SECRET`
+   - `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` (replay ledger, rate limits, read cache)
+   - optional `THE_ODDS_API_KEY`
+4. **Add GitHub repository secrets** `CALIBRO_URL` (the deployed URL) and `CRON_SECRET`, so `settle.yml` settles, grades and warms the cache every 30 minutes. Run it once by hand (Actions → Settle & grade → Run workflow).
+5. **Top up the agent wallet** `0xe33f666912d7e58ea5f86b25c37059b8c47e4dcfb83deadce4603c37e1267c82`. One live evaluation costs about 0.015 SUI (up to six 0.002 SUI payments plus gas).
+6. **Log real picks from your own wallet** in the Pick journal before tonight's games. Three graded picks with a Brier of 0.25 or better make you a TopPicker. Picks are graded when Polymarket resolves the game: by the deployed cron, or locally with `npm run settle`.
+7. **Record the 3-minute video** following `docs/DEMO_RUNBOOK_3MIN.md`.
+8. **Publish the blog post** (Dev.to, Medium, Mirror or similar) and add the demo URL, video and blog links to the top of `README.md`.
+9. **Post on X or LinkedIn** with the demo link.
+10. **Submit the form**: repo URL, demo URL, blog URL, your **Tatum dashboard account ID**, and your **MEMWAL_AGENT_ID** (the public key under Delegate keys in the Walrus Memory dashboard).
+
+## 4. Before you submit
+
+- `npm run typecheck && npm test && npm run build` pass, and CI is green on `main`.
+- On the deployed site: `/api/status` reports `LIVE_MAINNET`; `/app/record` lists the settled games with working Suiscan and Walruscan links; a visitor can preview a resolved game; the Pick journal connects a wallet.
+- `git ls-files` shows no `.env*` (other than `.env.example`), keys or `.calibro/` files.
