@@ -17,7 +17,7 @@ import { FileReplayLedger, RedisReplayLedger, type ReplayLedger } from "../x402/
 import type { SignalLookup } from "../x402/signal-gate";
 import { SuiX402Payer, type X402Payer } from "../x402/sui-payer";
 import { CalibroMemoryClient } from "../walrus/memory-client";
-import type { SpecialistId } from "../types/calibro";
+import type { MarketDomain, SpecialistCalibrationRecord, SpecialistId } from "../types/calibro";
 
 export interface RuntimeMode {
   mode: "LIVE_MAINNET" | "UNCONFIGURED";
@@ -163,6 +163,35 @@ class CounterfactualSignalProvider implements SpecialistSignalProvider {
   }
 }
 
+/**
+ * Visitor preview: Calibro's real recalled record from Walrus (calibration, mandate,
+ * analogous games) deciding over the same signals computed in-process. Nothing is paid
+ * (signals are UNPAID, never carry a digest) and nothing is written: callers must pass
+ * `persistThesis: false`. Used only on resolved games, labelled as a preview in the UI.
+ */
+export function buildPreviewEngine(ledger?: SpecialistCalibrationRecord[] | null): SyndicateEngine {
+  const { coinType, amountRaw } = paymentConfig();
+  const base = getMemory();
+  // With the replayed ledger (built from the cached post-mortems, identical to the stored
+  // checkpoints), skip the per-source calibration recalls; mandate and analogous-game
+  // recalls still go to Walrus.
+  const memory = ledger
+    ? Object.assign(Object.create(base) as CalibroMemoryClient, {
+        recallDomainCalibrations: async (domain: MarketDomain) => ({
+          bySpecialist: Object.fromEntries(ledger.filter((r) => r.domain === domain).map((r) => [r.specialistId, r])) as Partial<
+            Record<SpecialistId, SpecialistCalibrationRecord>
+          >,
+        }),
+      })
+    : base;
+  return new SyndicateEngine({ memory, signals: new CounterfactualSignalProvider(), rates: getTatum(), defaultFee: { coinType, amountRaw } });
+}
+
+/** Whether evaluate/settle need the operator token here (same rule as checkAdmin). */
+export function operatorTokenRequired(): boolean {
+  return Boolean(process.env.CALIBRO_ADMIN_TOKEN?.trim()) || process.env.NODE_ENV === "production";
+}
+
 export function buildColdStartEngine(): SyndicateEngine {
   const { coinType, amountRaw } = paymentConfig();
   return new SyndicateEngine({
@@ -185,6 +214,20 @@ export function checkAdmin(request: Request): string | null {
     return process.env.NODE_ENV === "production" ? "Writes are disabled on this deployment (set CALIBRO_ADMIN_TOKEN)." : null;
   }
   return request.headers.get("x-calibro-admin") === token ? null : "Missing or invalid x-calibro-admin header.";
+}
+
+/**
+ * Scheduled jobs (/api/cron/*): `Authorization: Bearer $CRON_SECRET` (what Vercel Cron and
+ * the GitHub workflow send) or the admin token. Open only in local dev with neither set.
+ */
+export function cronAuthorized(request: Request): boolean {
+  const cronSecret = process.env.CRON_SECRET?.trim();
+  const adminToken = process.env.CALIBRO_ADMIN_TOKEN?.trim();
+  return Boolean(
+    (cronSecret && (request.headers.get("authorization") ?? "") === `Bearer ${cronSecret}`) ||
+      (adminToken && request.headers.get("x-calibro-admin") === adminToken) ||
+      (!cronSecret && !adminToken && process.env.NODE_ENV !== "production")
+  );
 }
 
 export { findMarket, getMarketFeed, SPECIALIST_IDS };
