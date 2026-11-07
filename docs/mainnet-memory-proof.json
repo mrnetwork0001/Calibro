@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T00:15:51.046Z",
+  "generatedAt": "2026-11-07T15:10:17.032Z",
   "startedAt": "2026-11-06T23:54:04.695Z",
   "complete": true,
   "network": "mainnet",
@@ -1697,6 +1697,68 @@
       "postMortemBlobId": "u6Vwgp2nocGb2crlDCbdrmQVdYJVAG1zDSc1H3lt86Y",
       "calibrationBlobIds": [],
       "status": "ALREADY_ON_WALRUS"
+    },
+    {
+      "epoch": 37,
+      "marketId": "poly-nba-6428604",
+      "domain": "NBA",
+      "title": "Trail Blazers vs. Lakers",
+      "asOf": "2026-11-07T02:55:00.000Z",
+      "polymarketUrl": "https://polymarket.com/market/nba-por-lal-2026-11-06",
+      "outcome": 0,
+      "onchainProb": 0.415,
+      "bookProb": 0.4162,
+      "calibroProb": 0.4244,
+      "naiveProb": 0.4201,
+      "calibroBrier": 0.18011536,
+      "naiveBrier": 0.17648400999999997,
+      "marketBrier": 0.172225,
+      "paid": [
+        {
+          "specialistId": "sharp-steam",
+          "p": 0.4215,
+          "txDigest": "9F4pjwmBNEU4oL7WvPdGhzPNj2Ai6ZJGbPLoZ2SsVwrQ"
+        },
+        {
+          "specialistId": "power-rating",
+          "p": 0.4389,
+          "txDigest": "DBSCLNwvMDiRfM7GvyAmF2nUaU7421ktfrkJKnF9okuw"
+        },
+        {
+          "specialistId": "onchain-flow",
+          "p": 0.415,
+          "txDigest": "3BuGGa8v1577HLxXBbXBESjMbydKnPEjAPyXnpVeXr8f"
+        },
+        {
+          "specialistId": "kalshi-crowd",
+          "p": 0.415,
+          "txDigest": "JAaYUELH1YYJ8DrxEK1UMBG9ithd7VQ8i8VvTVTfBb1s"
+        },
+        {
+          "specialistId": "manifold-crowd",
+          "p": 0.41,
+          "txDigest": "FjprJseUXcExTpBkEGtEov5VvA3JMX4qdGtXo818pzew"
+        }
+      ],
+      "vetoed": [
+        {
+          "specialistId": "hype-contrarian",
+          "reason": "Vetoed x402 payment: recalled NBA Brier 0.310 exceeds cutoff 0.265 across 4 settled markets."
+        }
+      ],
+      "action": "PASS",
+      "pnlUsd": 0,
+      "thesisBlobId": "WLei6653IL34dhQUBDjWfKJOGCY4ot_v16rd_Z4cWv4",
+      "postMortemBlobId": "isqez6CL2A-3oQKWjLbkuGYTgRt-P2hgO9f9W9hufcA",
+      "calibrationBlobIds": [
+        "I7HIxVE0OQ-CumkJbNhSs2xAC3yiHz5GVYRhXvUo-Ig",
+        "jIpUDhaAVTx6XwAnVt43dwqx2jqGyhdd8vH_gxVDR98",
+        "ZPJ_2R9oHhRURwn1Yt8f6nerx29YS3UE8lNa9C4m8qw",
+        "lEwl5qT-W2lHFJN8nG2-MV7jjnodg5426bLePu6LrMs",
+        "9J3e1Ok80wEGhkmTATJTNOtVsyKU6oyVC3nKMDs4mck",
+        "llDVT81GWkWiBGH9t_VMK84mRphvFznrUnRo6-4k5RA"
+      ],
+      "status": "TRAINED"
     }
   ],
   "heldOut": [
@@ -1993,9 +2055,39 @@
       "marketId": "poly-nba-6293068",
       "txDigest": "CY9oWyihAAP8Y1b6NqSswZWYYN7dM6ccBwzVqDCvpASr",
       "checkpoint": "342453103"
+    },
+    {
+      "specialistId": "sharp-steam",
+      "marketId": "poly-nba-6428604",
+      "txDigest": "9F4pjwmBNEU4oL7WvPdGhzPNj2Ai6ZJGbPLoZ2SsVwrQ",
+      "checkpoint": "342678411"
+    },
+    {
+      "specialistId": "manifold-crowd",
+      "marketId": "poly-nba-6428604",
+      "txDigest": "FjprJseUXcExTpBkEGtEov5VvA3JMX4qdGtXo818pzew",
+      "checkpoint": "342678425"
+    },
+    {
+      "specialistId": "onchain-flow",
+      "marketId": "poly-nba-6428604",
+      "txDigest": "3BuGGa8v1577HLxXBbXBESjMbydKnPEjAPyXnpVeXr8f",
+      "checkpoint": "342678437"
+    },
+    {
+      "specialistId": "power-rating",
+      "marketId": "poly-nba-6428604",
+      "txDigest": "DBSCLNwvMDiRfM7GvyAmF2nUaU7421ktfrkJKnF9okuw",
+      "checkpoint": "342678449"
+    },
+    {
+      "specialistId": "kalshi-crowd",
+      "marketId": "poly-nba-6428604",
+      "txDigest": "JAaYUELH1YYJ8DrxEK1UMBG9ithd7VQ8i8VvTVTfBb1s",
+      "checkpoint": "342678460"
     }
   ],
-  "inventoryTotal": 216,
+  "inventoryTotal": 232,
   "namespaces": [
     {
       "name": "calibro:mandates",
@@ -2003,11 +2095,11 @@
     },
     {
       "name": "calibro:calibration",
-      "memoryCount": 143
+      "memoryCount": 155
     },
     {
       "name": "calibro:episodic",
-      "memoryCount": 72
+      "memoryCount": 76
     }
   ]
 }
