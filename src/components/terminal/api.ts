@@ -3,10 +3,11 @@
 import type { MarketFeed } from "@/lib/markets/odds-feed";
 import type { MarketEvaluation, SettlementResult } from "@/lib/orchestrator/syndicate-engine";
 import type { RuntimeMode } from "@/lib/server/runtime";
+import type { CacheInfo, RecordGame } from "@/lib/server/read-models";
 import type { MarketDomain, PickPayoutRecord, PickRecord, ScorecardRecord, SpecialistCalibrationRecord, SpecialistId } from "@/lib/types/calibro";
 import type { TapeEvent } from "@/lib/x402/http-signal-provider";
 
-export type { MarketEvaluation, SettlementResult, TapeEvent, RuntimeMode, SpecialistCalibrationRecord };
+export type { MarketEvaluation, SettlementResult, TapeEvent, RuntimeMode, SpecialistCalibrationRecord, CacheInfo, RecordGame };
 
 type Settled<T> = { ok: true; value: T } | { ok: false; error: string };
 
@@ -33,6 +34,8 @@ export interface StatusResponse {
     payerError?: string;
     payerBalances: Settled<Array<{ coinType: string; totalBalance: string }>> | null;
   };
+  /** Whether evaluate/settle need the operator token on this deployment */
+  operator?: { tokenRequired: boolean };
   checkedAt: string;
 }
 
@@ -41,6 +44,17 @@ export interface EvaluateResponse {
   evaluation: MarketEvaluation;
   tape: TapeEvent[];
   coldStart: MarketEvaluation | null;
+  /** True for a visitor preview: Calibro's real record, signals computed in-process, nothing paid or written */
+  preview?: boolean;
+  /** What Calibro actually did on this game on Mainnet, if it evaluated it (read from Walrus) */
+  recorded?: RecordGame | null;
+}
+
+export interface RecordResponse {
+  games: RecordGame[];
+  totals: { games: number; calibroBrier: number; marketBrier: number; paidSignals: number; refusals: number; paperPnlUsd: number };
+  identities: { accountId: string | null; agentAddress: string | null; treasury: string | null };
+  cache?: CacheInfo;
 }
 
 export interface SettleResponse {
@@ -64,6 +78,7 @@ export interface CalibrationResponse {
     settledAt?: string;
   }>;
   points: Array<{ source: SpecialistId | "calibro"; domain: MarketDomain; p: number; y: 0 | 1 }>;
+  cache?: CacheInfo;
 }
 
 export interface AuditResponse {
@@ -72,6 +87,7 @@ export interface AuditResponse {
   namespaces: Array<{ name: string; memoryCount: number; updatedAt: string }>;
   memories: Array<{ blobId: string; namespace: string; createdAt: string; status: string; size: number }>;
   accountId: string | null;
+  cache?: CacheInfo;
 }
 
 export type { MarketFeed };
@@ -116,6 +132,7 @@ export interface LeaderboardResponse {
     polymarket: number;
     specialists: Array<{ id: SpecialistId; samples: number; brier: number | null }>;
   } | null;
+  cache?: CacheInfo;
 }
 
 const ADMIN_KEY = "calibro-admin-token";
@@ -146,6 +163,8 @@ export const api = {
   audit: () => call<AuditResponse>("/api/walrus/audit"),
   evaluate: (marketId: string) =>
     call<EvaluateResponse>("/api/evaluate", { method: "POST", body: JSON.stringify({ marketId, compare: true }) }),
+  preview: (marketId: string) => call<EvaluateResponse>("/api/evaluate/preview", { method: "POST", body: JSON.stringify({ marketId }) }),
+  record: () => call<RecordResponse>("/api/record"),
   settle: (marketId: string) => call<SettleResponse>("/api/settle", { method: "POST", body: JSON.stringify({ marketId }) }),
   picks: (address: string) => call<PicksResponse>(`/api/picks?address=${encodeURIComponent(address)}`),
   submitPick: (message: string, signature: string, coach?: { suggestedPercent: number | null }) =>
@@ -153,8 +172,24 @@ export const api = {
   coach: (marketId: string, address?: string | null) =>
     call<CoachDataResponse>(`/api/picks/coach?marketId=${encodeURIComponent(marketId)}${address ? `&address=${encodeURIComponent(address)}` : ""}`),
   leaderboard: () => call<LeaderboardResponse>("/api/leaderboard"),
-  timeline: () => call<import("@/lib/timeline/build").Timeline>("/api/timeline"),
+  timeline: () => call<import("@/lib/timeline/build").Timeline & { cache?: CacheInfo }>("/api/timeline"),
 };
+
+/**
+ * Plain-language version of a failed read. Walrus Memory relayer stalls are common and
+ * temporary, so they're named as such; anything else is shown as is.
+ */
+export function friendlyError(message: string): string {
+  if (/timed out|preflight|did not answer|ECONNRESET|fetch failed|relayer|HTTP 50[234]/i.test(message)) {
+    return "Walrus Memory is slow to answer right now, so this couldn't load.";
+  }
+  if (/not configured/i.test(message)) return message;
+  return message;
+}
+
+/** "as of 14:05" for a cached read, in the viewer's time zone. */
+export const asOfLabel = (iso: string | undefined) =>
+  iso ? new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
 
 export const SPECIALIST_LABEL: Record<SpecialistId, string> = {
   "sharp-steam": "SharpSteam",

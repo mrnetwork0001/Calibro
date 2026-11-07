@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { asOfLabel, friendlyError } from "./api";
 
 /** Reserved status palette (never reused for series). Always rendered with an icon + label. */
 export const STATUS = {
@@ -135,6 +136,34 @@ export function Skeleton({ rows = 5, className = "" }: { rows?: number; classNam
         </div>
       ))}
     </div>
+  );
+}
+
+/**
+ * A read that failed, said plainly: what happened, that it's retrying, or a Retry button.
+ * The raw error stays available on hover for anyone debugging.
+ */
+export function LoadError({ error, retrying, onRetry, compact }: { error: string; retrying: boolean; onRetry: () => void; compact?: boolean }) {
+  return (
+    <div role="status" className={`flex flex-col items-center justify-center gap-3 text-center text-[13px] text-ink-3 ${compact ? "py-3" : "min-h-24 px-6 py-8"}`}>
+      <p title={error}>
+        <span aria-hidden className="mr-1.5 text-[10px]" style={{ color: STATUS.warning }}>
+          ▲
+        </span>
+        {friendlyError(error)}
+      </p>
+      {retrying ? <p className="text-[12px] text-ink-4">Retrying…</p> : <Button variant="ghost" onClick={onRetry}>Retry</Button>}
+    </div>
+  );
+}
+
+/** Shown when the server served its last good copy because Walrus didn't answer just now. */
+export function StaleNote({ cache }: { cache?: { asOf: string; stale: boolean } }) {
+  if (!cache?.stale) return null;
+  return (
+    <p className="mb-3 text-[12px] text-warning-ink">
+      ▲ Walrus Memory didn&apos;t answer just now; showing the record as read at {asOfLabel(cache.asOf)}.
+    </p>
   );
 }
 
