@@ -17,7 +17,7 @@
  * are skipped. docs/mainnet-memory-proof.json is rewritten after every market from real
  * relayer and Sui responses only, and marked complete when the run finishes.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { MemWalMock } from "@mysten-incubation/memwal";
 import { mapLimit } from "../src/lib/data/http";
 import { listResolvedMarkets } from "../src/lib/data/polymarket";
@@ -114,6 +114,37 @@ function writeProof(doc: unknown): void {
   writeFileSync(PROOF_PATH, JSON.stringify(doc, null, 2));
 }
 
+interface PreviousProof {
+  startedAt?: string;
+  mandateBlobId?: string;
+  dataSources?: string[];
+  markets: MarketRow[];
+  heldOut: Array<{ marketId: string; title: string; asOf: string }>;
+  x402Payments: Array<{ specialistId: string; marketId: string; txDigest?: string; checkpoint?: string }>;
+}
+
+/**
+ * The proof from earlier runs on the same Walrus account, so a partial or resumed run adds
+ * to it instead of replacing it. Ignored if it belongs to another account or network.
+ */
+function readPreviousProof(accountId: string | undefined): PreviousProof | null {
+  if (!existsSync(PROOF_PATH)) return null;
+  try {
+    const doc = JSON.parse(readFileSync(PROOF_PATH, "utf8")) as Partial<PreviousProof> & { network?: string; accountId?: string };
+    if (doc.network !== "mainnet" || !accountId || doc.accountId !== accountId) return null;
+    return {
+      startedAt: doc.startedAt,
+      mandateBlobId: doc.mandateBlobId,
+      dataSources: doc.dataSources,
+      markets: Array.isArray(doc.markets) ? doc.markets : [],
+      heldOut: Array.isArray(doc.heldOut) ? doc.heldOut : [],
+      x402Payments: Array.isArray(doc.x402Payments) ? doc.x402Payments : [],
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function main() {
   loadDotEnv();
   const preview = hasFlag("--preview");
@@ -177,21 +208,35 @@ async function main() {
   console.log("2) Evaluate → pay → settle → learn, in chronological order:\n");
   const rows: MarketRow[] = [];
   const startedAt = new Date().toISOString();
-  const proofDoc = () => ({
-    generatedAt: new Date().toISOString(),
-    startedAt,
-    complete: false,
-    network: "mainnet",
-    relayer: memory.serverUrl,
-    accountId: process.env.MEMWAL_ACCOUNT_ID,
-    agentWallet: payer?.address,
-    treasury: process.env.CALIBRO_SIGNAL_TREASURY_ADDRESS,
-    mandateBlobId,
-    dataSources: ["Polymarket Gamma + CLOB (prices, resolution)", "ESPN (DraftKings lines, BPI)"],
-    markets: rows,
-    heldOut: holdout.map((s) => ({ marketId: s.market.marketId, title: s.market.title, asOf: s.asOf })),
-    x402Payments: tape.filter((t) => t.kind === "VERIFIED").map((t) => ({ specialistId: t.specialistId, marketId: t.marketId, txDigest: t.txDigest, checkpoint: t.checkpoint })),
-  });
+  const previous = preview ? null : readPreviousProof(process.env.MEMWAL_ACCOUNT_ID);
+  const proofDoc = () => {
+    // Earlier rows win over this run's "already settled" rows, which carry less detail.
+    const byMarket = new Map<string, MarketRow>((previous?.markets ?? []).map((r) => [r.marketId, r]));
+    for (const r of rows) if (!(r.status === "ALREADY_ON_WALRUS" && byMarket.has(r.marketId))) byMarket.set(r.marketId, r);
+    const markets = [...byMarket.values()].sort((a, b) => Date.parse(a.asOf) - Date.parse(b.asOf)).map((r, k) => ({ ...r, epoch: k + 1 }));
+    const payments = new Map((previous?.x402Payments ?? []).filter((p) => p.txDigest).map((p) => [p.txDigest!, p]));
+    for (const t of tape) {
+      if (t.kind === "VERIFIED" && t.txDigest) payments.set(t.txDigest, { specialistId: t.specialistId, marketId: t.marketId, txDigest: t.txDigest, checkpoint: t.checkpoint });
+    }
+    const heldOut = (holdout.length > 0 ? holdout.map((s) => ({ marketId: s.market.marketId, title: s.market.title, asOf: s.asOf })) : (previous?.heldOut ?? [])).filter(
+      (h) => !byMarket.has(h.marketId)
+    );
+    return {
+      generatedAt: new Date().toISOString(),
+      startedAt: previous?.startedAt ?? startedAt,
+      complete: false,
+      network: "mainnet",
+      relayer: memory.serverUrl,
+      accountId: process.env.MEMWAL_ACCOUNT_ID,
+      agentWallet: payer?.address,
+      treasury: process.env.CALIBRO_SIGNAL_TREASURY_ADDRESS,
+      mandateBlobId: mandateBlobId ?? previous?.mandateBlobId,
+      dataSources: previous?.dataSources ?? ["Polymarket Gamma + CLOB (prices, resolution)", "ESPN (DraftKings lines, BPI)"],
+      markets,
+      heldOut,
+      x402Payments: [...payments.values()],
+    };
+  };
 
   for (const [i, snap] of train.entries()) {
     const m = snap.market;
