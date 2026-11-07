@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js & build artifacts
+.next/
+out/
+dist/
+build/
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# Environment & secrets (NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+.memwal-credentials.json
+
+# OS & logs
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.vercel
+coverage/
+
+# Local x402 anti-replay ledger
+.calibro/
+
+# production build next to a running dev server
+/.next-build/
