@@ -7,6 +7,7 @@ import type { MarketOpportunity } from "@/lib/types/calibro";
 import {
   api,
   DOMAIN_LABEL,
+  friendlyError,
   pct,
   short,
   SPECIALIST_LABEL,
@@ -16,8 +17,9 @@ import {
   type LeaderboardResponse,
   type PicksResponse,
 } from "../terminal/api";
-import { AppHeader, Masthead, PageTitle } from "../terminal/StatusRibbon";
-import { Badge, Button, Empty, ErrorLine, Panel, Stat } from "../terminal/ui";
+import { AppHeader, AppSections, Masthead, PageTitle } from "../terminal/StatusRibbon";
+import { Badge, Button, Empty, ErrorLine, LoadError, Panel, Skeleton, Stat } from "../terminal/ui";
+import { useLoad } from "../terminal/useLoad";
 import { useSuiWallet } from "./useSuiWallet";
 
 const f3 = (x: number | null | undefined) => (x === null || x === undefined || !Number.isFinite(x) ? "—" : x.toFixed(3));
@@ -25,10 +27,10 @@ const f3 = (x: number | null | undefined) => (x === null || x === undefined || !
 function WalletBar({ w }: { w: ReturnType<typeof useSuiWallet> }) {
   if (w.address) {
     return (
-      <div className="flex items-center gap-3 text-[13px]">
-        <span className="inline-flex items-center gap-2 text-paper/80">
+      <div className="flex items-center gap-3 text-[13px] whitespace-nowrap">
+        <span className="inline-flex items-center gap-2 text-paper/80" title={w.wallet?.name ?? "Wallet"}>
           <span className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-[#4cc26a]" />
-          {w.wallet?.name ?? "Wallet"}
+          <span className="max-[900px]:inline min-[901px]:max-[1099px]:hidden">{w.wallet?.name ?? "Wallet"}</span>
         </span>
         <span className="font-mono text-paper">{short(w.address)}</span>
         <button type="button" onClick={() => void w.disconnect()} className="text-paper/60 underline decoration-paper/30 underline-offset-4 hover:text-paper">
@@ -39,12 +41,11 @@ function WalletBar({ w }: { w: ReturnType<typeof useSuiWallet> }) {
   }
   if (w.wallets.length === 0) {
     return (
-      <span className="text-[13px] text-paper/60">
-        No Sui wallet found. Install{" "}
+      <span className="whitespace-nowrap text-[13px] text-paper/60" title="Calibro works with any Sui wallet that supports wallet-standard signing.">
+        No Sui wallet found ·{" "}
         <a className="text-paper underline decoration-paper/30 underline-offset-4 hover:decoration-paper" href="https://slush.app" target="_blank" rel="noreferrer">
-          Slush
-        </a>{" "}
-        or any Sui wallet.
+          Get Slush
+        </a>
       </span>
     );
   }
@@ -74,7 +75,8 @@ export function PicksApp() {
   const [sealed, setSealed] = useState<{ blobId: string; title: string } | null>(null);
   const [mine, setMine] = useState<PicksResponse | null>(null);
   const [mineError, setMineError] = useState<string | null>(null);
-  const [board, setBoard] = useState<LeaderboardResponse | null>(null);
+  const boardLoad = useLoad(() => api.leaderboard());
+  const board: LeaderboardResponse | null = boardLoad.data;
   const [coachData, setCoachData] = useState<CoachDataResponse | null>(null);
   const [coachError, setCoachError] = useState<string | null>(null);
 
@@ -83,7 +85,6 @@ export function PicksApp() {
       .markets()
       .then((f) => setMarkets(f.markets.filter((m) => m.source === "LIVE" && m.domain !== "CRYPTO_MACRO")))
       .catch(() => setMarkets([]));
-    api.leaderboard().then(setBoard).catch(() => undefined);
   }, []);
 
   const refreshMine = useCallback(() => {
@@ -161,8 +162,11 @@ export function PicksApp() {
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
+      <AppHeader active="picks" right={<WalletBar w={w} />} />
       <Masthead>
-        <AppHeader active="picks" right={<WalletBar w={w} />} mobileBar={<WalletBar w={w} />} />
+        <AppSections active="picks">
+          <WalletBar w={w} />
+        </AppSections>
         <PageTitle title="Pick journal">
           Sign a probability before the game. It&apos;s sealed on Walrus Memory with your wallet&apos;s signature, graded against Polymarket&apos;s
             result, and scored with the same Brier and Platt maths Calibro uses on its own sources. Signing is free and moves no funds.
@@ -246,7 +250,7 @@ export function PicksApp() {
                         )}
                       </div>
                       {coachError ? (
-                        <p className="mt-1 text-xs text-ink-3">Coach unavailable: {coachError}</p>
+                        <p className="mt-1 text-xs text-ink-3" title={coachError}>Coach unavailable: {friendlyError(coachError)}</p>
                       ) : !advice ? (
                         <p className="mt-1 text-xs text-ink-3">Recalling your record and Calibro&apos;s…</p>
                       ) : (
@@ -293,7 +297,7 @@ export function PicksApp() {
             {!w.address ? (
               <Empty>Connect a wallet to see your picks and scorecard.</Empty>
             ) : mineError ? (
-              <ErrorLine error={mineError} />
+              <LoadError error={mineError} retrying={false} onRetry={refreshMine} />
             ) : !mine ? (
               <Empty>Recalling your picks from Walrus…</Empty>
             ) : (
@@ -390,8 +394,10 @@ export function PicksApp() {
         </div>
 
         <Panel kicker="You vs Calibro vs the market" title="Leaderboard">
-          {!board ? (
-            <Empty>Loading…</Empty>
+          {!board && boardLoad.error ? (
+            <LoadError error={boardLoad.error} retrying={boardLoad.retrying} onRetry={boardLoad.reload} />
+          ) : !board ? (
+            <Skeleton rows={4} />
           ) : (
             <div className="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
               {board.users.length === 0 ? (
