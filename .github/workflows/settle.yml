@@ -1,8 +1,9 @@
 name: Settle & grade
 
-# Calls the deployed app's settlement job every 30 minutes (Vercel's Hobby plan only runs
-# its own crons daily). Needs repository secrets CALIBRO_URL (e.g. https://calibro.vercel.app)
-# and CRON_SECRET (same value as the deployment's CRON_SECRET).
+# Calls the deployed app's settlement job every 30 minutes, then refills its read cache
+# (Vercel's Hobby plan only runs its own crons daily; vercel.json keeps a daily fallback).
+# Needs repository secrets CALIBRO_URL (e.g. https://calibro.vercel.app) and CRON_SECRET
+# (same value as the deployment's CRON_SECRET).
 on:
   schedule:
     - cron: "*/30 * * * *"
@@ -20,3 +21,14 @@ jobs:
         run: |
           if [ -z "$CALIBRO_URL" ] || [ -z "$CRON_SECRET" ]; then echo "CALIBRO_URL / CRON_SECRET not set; skipping."; exit 0; fi
           curl -sS --fail-with-body --max-time 90 -H "Authorization: Bearer $CRON_SECRET" "$CALIBRO_URL/api/cron/settle"
+
+      # Refill the shared read cache (settled games, inventory, scorecards) so visitors never
+      # wait on a cold Walrus recall. Runs even if settling failed.
+      - name: Warm /api/cron/warm
+        if: always()
+        env:
+          CALIBRO_URL: ${{ secrets.CALIBRO_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CALIBRO_URL" ] || [ -z "$CRON_SECRET" ]; then echo "CALIBRO_URL / CRON_SECRET not set; skipping."; exit 0; fi
+          curl -sS --fail-with-body --max-time 90 -H "Authorization: Bearer $CRON_SECRET" "$CALIBRO_URL/api/cron/warm"
