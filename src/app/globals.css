@@ -241,15 +241,6 @@ input[type="range"] {
   animation: travel 5s cubic-bezier(0.6, 0, 0.4, 1) infinite;
 }
 
-/* Arrow nudge on hover for links with a trailing arrow */
-.arrow-link .arrow {
-  display: inline-block;
-  transition: transform 200ms ease;
-}
-.arrow-link:hover .arrow {
-  transform: translateX(3px);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .rise,
   .fade-in,
@@ -320,9 +311,16 @@ figure {
 }
 
 @media (max-width: 900px) {
+  /* `clip`, not `hidden`: hidden on both html and body turns body into a scroll container,
+     and the sticky headers would then scroll away with the page. */
   html,
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
+  }
+  @supports not (overflow: clip) {
+    html {
+      overflow-x: hidden;
+    }
   }
   input[type="text"],
   input[type="password"],
