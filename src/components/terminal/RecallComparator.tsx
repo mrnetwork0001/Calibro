@@ -1,12 +1,13 @@
 "use client";
 
-import type { MarketEvaluation } from "./api";
-import { SPECIALIST_LABEL, pct, usd } from "./api";
+import type { MarketOpportunity } from "@/lib/types/calibro";
+import type { MarketEvaluation, RecordGame } from "./api";
+import { SPECIALIST_LABEL, pct, short, suiscanTx, usd, walruscanBlob } from "./api";
 import { CountUp } from "../motion/CountUp";
-import { Badge, Empty, Panel } from "./ui";
+import { Badge, Button, Empty, Panel, Skeleton } from "./ui";
 
 /** One agent's decision: which sources it paid, how it weighted them, what it would do. */
-function Side({ title, note, ev, unavailable }: { title: string; note: string; ev: MarketEvaluation; unavailable: Set<string> }) {
+function Side({ title, note, ev, unavailable, preview }: { title: string; note: string; ev: MarketEvaluation; unavailable: Set<string>; preview?: boolean }) {
   const t = ev.thesis;
   const spentSui = ev.slate.spentSui;
   const savedSui = t.signalsVetoed.reduce((acc, v) => acc + Number(v.savedFeeSui), 0);
@@ -74,10 +75,11 @@ function Side({ title, note, ev, unavailable }: { title: string; note: string; e
       </table>
 
       <p className="mt-3 border-t border-rule pt-2 text-[12px] text-ink-3">
-        Paid <span className="font-mono text-ink-2">{spentSui.toFixed(3)} SUI</span> for {t.signalsUsed.length} signal{t.signalsUsed.length === 1 ? "" : "s"}
+        {preview ? "Would pay" : "Paid"} <span className="font-mono text-ink-2">{spentSui.toFixed(3)} SUI</span> for {t.signalsUsed.length} signal
+        {t.signalsUsed.length === 1 ? "" : "s"}
         {savedSui > 0 && (
           <>
-            , refused <span className="font-mono text-ink-2">{savedSui.toFixed(3)} SUI</span>
+            , {preview ? "would refuse" : "refused"} <span className="font-mono text-ink-2">{savedSui.toFixed(3)} SUI</span>
           </>
         )}
         . Equal-weight average {pct(t.naiveEqualWeightProb)}.
@@ -86,26 +88,144 @@ function Side({ title, note, ev, unavailable }: { title: string; note: string; e
   );
 }
 
-export function RecallComparator({ evaluation, coldStart }: { evaluation: MarketEvaluation | null; coldStart: MarketEvaluation | null }) {
+/** What Calibro actually did on this game on Mainnet, read from its post-mortem on Walrus. */
+function Recorded({ g }: { g: RecordGame }) {
+  return (
+    <div className="mt-5 border-l-2 border-ink bg-sunken px-4 py-3 text-[12px] leading-relaxed text-ink-2">
+      <p className="text-[13px] text-ink">
+        On Mainnet, Calibro forecast <span className="font-mono">{pct(g.calibroProb)}</span> against Polymarket&apos;s{" "}
+        <span className="font-mono">{pct(g.marketProb)}</span>; {g.outcome === 1 ? "YES" : "NO"} won, Brier{" "}
+        <span className="font-mono">{g.calibroBrier.toFixed(3)}</span>.
+      </p>
+      <p className="mt-1">
+        Paid:{" "}
+        {g.paid.length === 0
+          ? "nothing"
+          : g.paid.map((p, i) => (
+              <span key={p.specialistId}>
+                {i > 0 && ", "}
+                {SPECIALIST_LABEL[p.specialistId as keyof typeof SPECIALIST_LABEL] ?? p.specialistId}
+                {p.txDigest && (
+                  <>
+                    {" "}
+                    <a className="link font-mono text-[11px]" href={suiscanTx(p.txDigest)} target="_blank" rel="noreferrer">
+                      {short(p.txDigest, 6, 4)}
+                    </a>
+                  </>
+                )}
+              </span>
+            ))}
+        .
+        {g.refused.length > 0 && (
+          <> Refused: {g.refused.map((r) => SPECIALIST_LABEL[r.specialistId as keyof typeof SPECIALIST_LABEL] ?? r.specialistId).join(", ")}.</>
+        )}
+      </p>
+      <p className="mt-1">
+        Post-mortem on Walrus{" "}
+        <a className="link font-mono text-[11px]" href={walruscanBlob(g.postMortemBlobId)} target="_blank" rel="noreferrer">
+          {short(g.postMortemBlobId, 8, 6)}
+        </a>
+        {" · "}
+        <a className="link" href="/app/record">
+          every game on the Record tab
+        </a>
+      </p>
+    </div>
+  );
+}
+
+export function RecallComparator({
+  evaluation,
+  coldStart,
+  preview,
+  recorded,
+  locked,
+  canOperate,
+  onOperatorAccess,
+  busy,
+}: {
+  evaluation: MarketEvaluation | null;
+  coldStart: MarketEvaluation | null;
+  preview?: boolean;
+  recorded?: RecordGame | null;
+  locked?: MarketOpportunity | null;
+  canOperate?: boolean;
+  onOperatorAccess?: () => void;
+  /** A preview or evaluation is running */
+  busy?: boolean;
+}) {
   const gated = evaluation?.gates.map((g) => g.specialistId) ?? [];
   const recalled = evaluation ? gated.filter((id) => evaluation.context.calibrationSources[id] === "WALRUS_RECALL").length : 0;
-  const unavailable = new Set((evaluation?.acquisitionErrors ?? []).filter((e) => /has no signal/.test(e.error)).map((e) => e.specialistId));
-  const failed = (evaluation?.acquisitionErrors ?? []).filter((e) => !/has no signal/.test(e.error));
+  const unavailable = new Set((evaluation?.acquisitionErrors ?? []).filter((e) => /has no signal|no counterfactual signal/.test(e.error)).map((e) => e.specialistId));
+  const failed = (evaluation?.acquisitionErrors ?? []).filter((e) => !/has no signal|no counterfactual signal/.test(e.error));
 
   return (
     <Panel
       delay={80}
       title="Forecast"
       kicker="The same market, decided with no memory and with Calibro's recalled record"
-      right={evaluation && <span className="text-[12px] text-ink-3">{recalled} of {gated.length} records recalled from Walrus</span>}
-    >
-      {!evaluation || !coldStart ? (
-        <Empty>
-          <span>
-            Choose a market and press <span className="text-ink">Evaluate</span>.
-            <br />
-            You&apos;ll see what an agent with no memory would do next to what Calibro does with its record.
+      right={
+        evaluation &&
+        (preview ? (
+          <Badge tone="info" title="Calibro's real record from Walrus decided over signals computed in-process. No SUI was spent and nothing was written.">
+            Preview · nothing paid or written
+          </Badge>
+        ) : (
+          <span className="text-[12px] text-ink-3">
+            {recalled} of {gated.length} records recalled from Walrus
           </span>
+        ))
+      }
+    >
+      {busy ? (
+        <div className="py-2" aria-live="polite">
+          <p className="mb-3 text-[13px] text-ink-3">
+            {canOperate
+              ? "Recalling Calibro's record from Walrus, buying the signals worth paying for over x402 on Sui, verifying each payment through Tatum…"
+              : "Recalling Calibro's record from Walrus and pricing the game as it stood before kickoff…"}
+          </p>
+          <Skeleton rows={6} />
+        </div>
+      ) : locked ? (
+        <div className="px-2 py-6 text-[13px] leading-relaxed text-ink-2">
+          <p className="font-serif text-[20px] leading-snug text-ink">{locked.title}</p>
+          <p className="mt-3 max-w-xl">
+            This game hasn&apos;t started, so evaluating it means buying live signals with real SUI and writing the thesis to Walrus. That&apos;s done
+            by the operator. Two other ways in:
+          </p>
+          <ul className="mt-2 max-w-xl list-disc space-y-1 pl-5 text-ink-3">
+            <li>
+              Filter <span className="text-ink">Resolved</span> and press <span className="text-ink">Preview</span> on a finished game: Calibro&apos;s real
+              record decides, nothing is paid or written.
+            </li>
+            <li>
+              Agents can buy this forecast for 0.01 SUI over x402:{" "}
+              <span className="font-mono text-[12px] text-ink">GET /api/forecast?marketId={locked.marketId}</span>
+            </li>
+          </ul>
+          {onOperatorAccess && (
+            <div className="mt-4">
+              <Button variant="ghost" onClick={onOperatorAccess}>
+                Operator access
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : !evaluation || !coldStart ? (
+        <Empty>
+          {canOperate ? (
+            <span>
+              Choose a market and press <span className="text-ink">Evaluate</span>.
+              <br />
+              You&apos;ll see what an agent with no memory would do next to what Calibro does with its record.
+            </span>
+          ) : (
+            <span>
+              Choose a resolved game and press <span className="text-ink">Preview</span>.
+              <br />
+              Calibro&apos;s real record from Walrus decides; nothing is paid or written. Then compare it with an agent that has no memory.
+            </span>
+          )}
         </Empty>
       ) : (
         <>
@@ -125,17 +245,24 @@ export function RecallComparator({ evaluation, coldStart }: { evaluation: Market
                 note="Flat priors: pays every source, weights them equally. Computed for comparison; not paid, not stored."
                 ev={coldStart}
                 unavailable={unavailable}
+                preview
               />
             </div>
             <div className="rise md:pl-6" style={{ animationDelay: "160ms" }}>
               <Side
                 title="With Calibro's record"
-                note={`Recalled from Walrus Memory: ${recalled} source records and the ${evaluation.context.mandateSource === "WALRUS_RECALL" ? "stored" : "default"} risk mandate.`}
+                note={
+                  preview
+                    ? `Recalled from Walrus Memory: ${recalled} source records and the ${evaluation.context.mandateSource === "WALRUS_RECALL" ? "stored" : "default"} risk mandate, as they stand today${recorded ? " (they already include this game)" : ""}. Signals computed in-process; nothing paid or written.`
+                    : `Recalled from Walrus Memory: ${recalled} source records and the ${evaluation.context.mandateSource === "WALRUS_RECALL" ? "stored" : "default"} risk mandate.`
+                }
                 ev={evaluation}
                 unavailable={unavailable}
+                preview={preview}
               />
             </div>
           </div>
+          {preview && recorded && <Recorded g={recorded} />}
           {failed.length > 0 && (
             <div className="mt-4 border-l-2 border-serious bg-[#fbeee7] px-3 py-2 text-[12px] text-serious-ink">
               {failed.map((e) => (
