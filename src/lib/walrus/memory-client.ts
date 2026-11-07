@@ -263,6 +263,9 @@ export class CalibroMemoryClient {
       namespace: CALIBRO_NAMESPACES.EPISODIC,
       // Recall decrypts every hit with SEAL; large recalls need more than the 15 s default.
       recallTimeoutMs: 40_000,
+      // The relayer's unauthenticated GET /version sometimes takes longer than the SDK's 5 s
+      // default; failing the whole read on that probe surfaced as 500s in the terminal.
+      preflightTimeoutMs: 15_000,
     });
   }
 
@@ -562,7 +565,14 @@ export class CalibroMemoryClient {
    * be cut off by the relayer's 100-hit window once theses + post-mortems pass 100).
    * One entry per market. Cached for 60 s; invalidated by any episodic write.
    */
-  async recallSettledEpisodes(): Promise<Array<{ blobId: string; record: EpisodicPredictionRecord }>> {
+  async recallSettledEpisodes(opts: { fresh?: boolean } = {}): Promise<Array<{ blobId: string; record: EpisodicPredictionRecord }>> {
+    if (opts.fresh) {
+      // Bypass the stale-while-revalidate slot: the shared read cache must never store a
+      // pre-settlement copy under a post-settlement generation.
+      const value = await this.loadSettledEpisodes();
+      this.settledCache = { at: Date.now(), value: Promise.resolve(value), last: value, lastAt: Date.now() };
+      return value;
+    }
     return swrRead(this.settledCache, () => this.loadSettledEpisodes(), (slot) => (this.settledCache = slot));
   }
 
