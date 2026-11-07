@@ -103,16 +103,13 @@ function PrimaryLink({
   return (
     <Link
       href={href}
-      className={`arrow-link inline-flex items-center gap-2.5 px-5 py-3 text-[15px] font-medium transition-colors ${
+      className={`inline-flex items-center px-5 py-3 text-[15px] font-medium transition-colors ${
         inverse
           ? "bg-paper text-ink hover:bg-white"
           : "bg-ink text-paper hover:bg-ink-2"
       }`}
     >
       {children}
-      <span className="arrow" aria-hidden>
-        →
-      </span>
     </Link>
   );
 }
@@ -496,7 +493,11 @@ async function TrackRecord() {
           )}
         </dl>
         <p className="mt-3 text-[13px] text-ink-3">
-          Every blob id and payment digest from training is listed in{" "}
+          Every settled game, with each Sui payment and its record on Walrus, is on the{" "}
+          <Link className="link" href="/app/record">
+            Record
+          </Link>{" "}
+          tab, read live from the account. The training run is also listed in{" "}
           <span className="font-mono">docs/mainnet-memory-proof.json</span>.
         </p>
       </div>
@@ -509,22 +510,22 @@ async function TrackRecord() {
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-paper text-ink">
+      {/* Sticky for the whole page: a direct child of the page, never inside the clipped hero. */}
+      <header className="sticky top-0 z-50 border-b border-paper/10 bg-ink text-paper">
+        <div className="mx-auto flex h-14 w-full max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-10">
+          <Link href="/" className="flex items-baseline gap-2">
+            <span className="font-serif text-[22px] leading-none font-semibold tracking-tight text-paper">
+              Calibro
+            </span>
+            <span
+              className="inline-block h-1.5 w-1.5 translate-y-[-2px] bg-[#e0663c]"
+              aria-hidden
+            />
+          </Link>
+          <LandingNav />
+        </div>
+      </header>
       <div className="ledger-dark grain grain-light relative overflow-hidden text-paper margin-gutter">
-        <header className="sticky top-0 z-40 border-b border-paper/10 bg-ink/80 backdrop-blur-md">
-          <div className="mx-auto flex h-14 w-full max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-10">
-            <Link href="/" className="flex items-baseline gap-2">
-              <span className="font-serif text-[22px] leading-none font-semibold tracking-tight text-paper">
-                Calibro
-              </span>
-              <span
-                className="inline-block h-1.5 w-1.5 translate-y-[-2px] bg-[#e0663c]"
-                aria-hidden
-              />
-            </Link>
-            <LandingNav />
-          </div>
-        </header>
-
         <LiveTicker />
 
         {/* Hero */}
@@ -563,9 +564,9 @@ export default function LandingPage() {
               </PrimaryLink>
               <Link
                 href="/app/picks"
-                className="arrow-link text-[15px] text-paper/80 underline decoration-paper/30 underline-offset-4 hover:text-paper hover:decoration-paper"
+                className="text-[15px] text-paper/80 underline decoration-paper/30 underline-offset-4 hover:text-paper hover:decoration-paper"
               >
-                Make a pick <span className="arrow">→</span>
+                Make a pick
               </Link>
             </div>
           </div>
@@ -842,9 +843,9 @@ GET … X-Payment: { txDigest, challengeId, payer }        200 OK, signed signal
               </PrimaryLink>
               <Link
                 href="/app"
-                className="arrow-link text-[15px] text-paper/80 underline decoration-paper/30 underline-offset-4 hover:text-paper"
+                className="text-[15px] text-paper/80 underline decoration-paper/30 underline-offset-4 hover:text-paper"
               >
-                Open the terminal <span className="arrow">→</span>
+                Open the terminal
               </Link>
             </div>
           </Reveal>
@@ -856,6 +857,9 @@ GET … X-Payment: { txDigest, challengeId, payer }        200 OK, signed signal
               </Link>
               <Link href="/app/picks" className="hover:text-paper">
                 Pick journal
+              </Link>
+              <Link href="/app/record" className="hover:text-paper">
+                Record
               </Link>
               <a href="/llms.txt" className="hover:text-paper">
                 llms.txt

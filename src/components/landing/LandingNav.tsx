@@ -33,9 +33,9 @@ export function LandingNav() {
           <div className="flex flex-col gap-3">
             <Link
               href="/app"
-              className="touch-btn-primary inline-flex items-center justify-center gap-2 bg-paper px-5 py-3 text-[15px] font-medium text-ink"
+              className="touch-btn-primary inline-flex items-center justify-center bg-paper px-5 py-3 text-[15px] font-medium text-ink"
             >
-              Open the terminal <span aria-hidden>→</span>
+              Open the terminal
             </Link>
             <Link
               href="/app/picks"
@@ -55,6 +55,7 @@ export function LandingNav() {
         <p className="pt-6 pb-2 text-[12px] tracking-wide text-paper/40">The app</p>
         <DrawerLink href="/app">Terminal</DrawerLink>
         <DrawerLink href="/app/picks">Pick journal</DrawerLink>
+        <DrawerLink href="/app/record">Record</DrawerLink>
         <DrawerLink href="/llms.txt" external>
           llms.txt
         </DrawerLink>
