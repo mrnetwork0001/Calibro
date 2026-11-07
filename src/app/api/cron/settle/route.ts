@@ -1,6 +1,7 @@
 import { settleFromPolymarket, type SettleAttempt } from "@/lib/markets/settlement";
 import { gradeResolvedPicks } from "@/lib/picks/service";
-import { buildEngine, errorResponse, getMemory, jsonResponse, requireLive } from "@/lib/server/runtime";
+import { invalidateReadModels } from "@/lib/server/read-cache";
+import { buildEngine, cronAuthorized, errorResponse, getMemory, jsonResponse, requireLive } from "@/lib/server/runtime";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,14 +18,7 @@ const BUDGET_MS = 35_000;
  * Vercel sends `Authorization: Bearer $CRON_SECRET`; the admin token is also accepted.
  */
 export async function GET(request: Request): Promise<Response> {
-  const auth = request.headers.get("authorization") ?? "";
-  const cronSecret = process.env.CRON_SECRET?.trim();
-  const adminToken = process.env.CALIBRO_ADMIN_TOKEN?.trim();
-  const ok =
-    (cronSecret && auth === `Bearer ${cronSecret}`) ||
-    (adminToken && request.headers.get("x-calibro-admin") === adminToken) ||
-    (!cronSecret && !adminToken && process.env.NODE_ENV !== "production");
-  if (!ok) return jsonResponse(401, { error: "Unauthorized" });
+  if (!cronAuthorized(request)) return jsonResponse(401, { error: "Unauthorized" });
 
   try {
     requireLive();
@@ -40,6 +34,8 @@ export async function GET(request: Request): Promise<Response> {
       if (attempt.status === "SETTLED") settled++;
     }
     const picks = Date.now() - started > BUDGET_MS ? [] : await gradeResolvedPicks(getMemory(), 3);
+    // New post-mortems or grades: every cached view must reload (the warm job refills them).
+    if (settled > 0 || picks.some((p) => p.status === "GRADED")) await invalidateReadModels();
     return jsonResponse(200, {
       picksGraded: picks.filter((p) => p.status === "GRADED"),
       picksWaiting: picks.filter((p) => p.status !== "GRADED").length,

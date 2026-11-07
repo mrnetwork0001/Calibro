@@ -1,4 +1,7 @@
+import { after } from "next/server";
 import { settleFromPolymarket } from "@/lib/markets/settlement";
+import { invalidateReadModels } from "@/lib/server/read-cache";
+import { warmReadModels } from "@/lib/server/read-models";
 import { buildEngine, checkAdmin, errorResponse, jsonResponse, requireLive, resolveMode } from "@/lib/server/runtime";
 
 export const runtime = "nodejs";
@@ -33,6 +36,12 @@ export async function POST(request: Request): Promise<Response> {
       case "VOID":
         return jsonResponse(409, { error: `${attempt.marketId}: ${attempt.detail}`, code: attempt.status });
       default:
+        if (attempt.status === "SETTLED") {
+          // The settled games changed: invalidate every cached view, then refill the shared
+          // copy behind the response so the terminal's next read is fast and current.
+          await invalidateReadModels();
+          after(() => warmReadModels(["settled-games", "namespace-counts", "inventory"]).then(() => undefined));
+        }
         return jsonResponse(200, { mode: resolveMode(), result: attempt.result });
     }
   } catch (err) {
