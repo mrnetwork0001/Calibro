@@ -3,7 +3,8 @@
  * comes from settled records on the account; nothing is computed from fixtures. Returns
  * null when Walrus isn't configured or reachable, and the page then shows no numbers.
  */
-import { getPayer, paymentConfig, resolveMode, getMemory } from "../server/runtime";
+import { namespaceTotals, settledGames } from "../server/read-models";
+import { getPayer, paymentConfig, resolveMode } from "../server/runtime";
 import { buildTimeline } from "../timeline/build";
 import type { MarketDomain, SpecialistCalibrationRecord } from "../types/calibro";
 
@@ -40,8 +41,9 @@ const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.le
 export async function getLedgerSummary(): Promise<LedgerSummary | null> {
   if (resolveMode().mode !== "LIVE_MAINNET") return null;
   try {
-    const memory = getMemory();
-    const [settledHits, counts] = await Promise.all([memory.recallSettledEpisodes(), memory.namespaceCounts()]);
+    const [settledCached, countsCached] = await Promise.all([settledGames(), namespaceTotals()]);
+    const settledHits = settledCached.value;
+    const counts = countsCached.value;
     const settled = settledHits.map((h) => h.record).filter((r) => r.outcome !== undefined);
     const replay = buildTimeline(settledHits);
     const sq = (p: number, y: 0 | 1) => (p - y) ** 2;
@@ -86,7 +88,7 @@ let lastHero: HeroSeries | null = null;
 export async function getHeroSeries(): Promise<HeroSeries | null> {
   if (resolveMode().mode !== "LIVE_MAINNET") return null;
   try {
-    const timeline = buildTimeline(await getMemory().recallSettledEpisodes());
+    const timeline = buildTimeline((await settledGames()).value);
     const counts = new Map<MarketDomain, number>();
     for (const s of timeline.steps) counts.set(s.domain, (counts.get(s.domain) ?? 0) + 1);
     const league = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
