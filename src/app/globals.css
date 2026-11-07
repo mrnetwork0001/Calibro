@@ -1,0 +1,389 @@
+@import "tailwindcss";
+
+/*
+ * Calibro design tokens: a light, editorial "research desk" system.
+ * Warm paper, ink text, hairline rules; one accent, reserved status colours,
+ * validated chart series (dataviz validator, light surface).
+ */
+@theme {
+  --color-paper: #f5f3ee;
+  --color-surface: #ffffff;
+  --color-sunken: #eeebe4;
+  --color-ink: #151514;
+  --color-ink-2: #3d3c38;
+  --color-ink-3: #67655f;
+  --color-ink-4: #8f8c84;
+  --color-rule: #e2ded4;
+  --color-rule-strong: #cbc6b8;
+  --color-accent: #b5401a;
+  --color-link: #1d4ed8;
+
+  /* status: always paired with an icon or label */
+  --color-good: #0ca30c;
+  --color-warning: #fab219;
+  --color-serious: #ec835a;
+  --color-critical: #d03b3b;
+  /* text-safe steps of the status hues (≥ 4.5:1 on paper) for labels next to the icon */
+  --color-good-ink: #1d6b1f;
+  --color-warning-ink: #855600;
+  --color-serious-ink: #a8481c;
+  --color-critical-ink: #b02a2a;
+
+  /* chart series (validated light, adjacent CVD ΔE 24.7) */
+  --color-series-1: #2a78d6;
+  --color-series-2: #eb6834;
+
+  --font-serif: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "kern", "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #f3d9c9;
+  color: var(--color-ink);
+}
+
+/* Tabular figures wherever numbers line up */
+.tabular-nums,
+.font-mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Underlined text links, editorial style */
+.link {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-rule-strong);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 120ms;
+}
+.link:hover {
+  text-decoration-color: var(--color-ink);
+}
+
+input[type="range"] {
+  accent-color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ texture */
+
+/* Fine paper grain over a surface (SVG turbulence, no image request). */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.grain-light::after {
+  mix-blend-mode: screen;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Ledger ruling: horizontal rules with a red margin line, like an accounts book. */
+.ledger-dark {
+  background-color: var(--color-ink);
+  background-image:
+    linear-gradient(to right, transparent 0, transparent calc(var(--margin, 72px) - 1px), rgba(205, 86, 46, 0.45) calc(var(--margin, 72px) - 1px), rgba(205, 86, 46, 0.45) calc(var(--margin, 72px) + 1px), transparent calc(var(--margin, 72px) + 1px)),
+    repeating-linear-gradient(to bottom, transparent 0, transparent 35px, rgba(245, 243, 238, 0.06) 35px, rgba(245, 243, 238, 0.06) 36px);
+}
+.ledger-light {
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 35px, rgba(21, 21, 20, 0.045) 35px, rgba(21, 21, 20, 0.045) 36px);
+}
+
+/* ------------------------------------------------------------------- motion */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Page-load entrance; stagger with style={{ animationDelay }} */
+.rise {
+  animation: rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.fade-in {
+  animation: fade 900ms ease both;
+}
+
+/* Scroll reveal (toggled by <Reveal>) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* SVG line draw-in: give the path pathLength="1" */
+.draw-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1800ms cubic-bezier(0.45, 0, 0.2, 1) forwards;
+}
+.pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-sunken) 0%, #f7f5f0 50%, var(--color-sunken) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.live-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+.packet {
+  offset-rotate: 0deg;
+  animation: travel 5s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+}
+
+/* Arrow nudge on hover for links with a trailing arrow */
+.arrow-link .arrow {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+.arrow-link:hover .arrow {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .fade-in,
+  .pop,
+  .marquee-track,
+  .skeleton,
+  .live-dot,
+  .packet {
+    animation: none !important;
+  }
+  .draw-line {
+    animation: none !important;
+    stroke-dashoffset: 0;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@keyframes slide-x {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+.packet-x {
+  animation: slide-x 6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .packet-x {
+    animation: none !important;
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ mobile */
+/* Mobile_View playbook: ≤ 900px = tablet/phone layout, ≤ 600px = phone density. */
+
+/* The ledger's red margin rule always sits in the gutter, never across text. */
+.margin-gutter {
+  --margin: 12px;
+}
+@media (min-width: 640px) {
+  .margin-gutter {
+    --margin: calc(max((100vw - 1360px) / 2, 0px) + 20px);
+  }
+}
+
+/* Overflow guards at every width: grid/flex children may shrink below their content. */
+main,
+section,
+aside,
+figure {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px; /* no iOS zoom on focus */
+  }
+  input[type="range"] {
+    height: 28px;
+  }
+  .touch-btn {
+    min-height: 36px;
+  }
+  .touch-btn-primary {
+    min-height: 44px;
+  }
+}
+
+/* Left drawer + burger */
+.burger span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: currentColor;
+  transition:
+    transform 220ms ease,
+    opacity 200ms ease;
+}
+.burger[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.burger[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+.burger[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+/* `position` is restated because .grain (unlayered CSS) sets position: relative, which beats Tailwind's `fixed`. */
+.drawer {
+  position: fixed;
+  transform: translateX(-100%);
+  transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.drawer[data-open="true"] {
+  transform: none;
+  box-shadow: 20px 0 60px rgba(0, 0, 0, 0.45);
+}
+.drawer-backdrop {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+}
+.drawer-backdrop[data-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .drawer-backdrop,
+  .burger span {
+    transition: none !important;
+  }
+}
