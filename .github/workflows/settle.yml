@@ -1,0 +1,22 @@
+name: Settle & grade
+
+# Calls the deployed app's settlement job every 30 minutes (Vercel's Hobby plan only runs
+# its own crons daily). Needs repository secrets CALIBRO_URL (e.g. https://calibro.vercel.app)
+# and CRON_SECRET (same value as the deployment's CRON_SECRET).
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Run /api/cron/settle
+        env:
+          CALIBRO_URL: ${{ secrets.CALIBRO_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CALIBRO_URL" ] || [ -z "$CRON_SECRET" ]; then echo "CALIBRO_URL / CRON_SECRET not set; skipping."; exit 0; fi
+          curl -sS --fail-with-body --max-time 90 -H "Authorization: Bearer $CRON_SECRET" "$CALIBRO_URL/api/cron/settle"
