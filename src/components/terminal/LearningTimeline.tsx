@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { MarketDomain, SpecialistId } from "@/lib/types/calibro";
-import { api, DOMAIN_LABEL, pct, short, SPECIALIST_LABEL, walruscanBlob, type Timeline, type TimelineSource, type TrustStatus } from "./api";
-import { Badge, Button, Empty, Panel, SERIES, Segmented, Skeleton } from "./ui";
+import { api, DOMAIN_LABEL, pct, short, SPECIALIST_LABEL, walruscanBlob, type CacheInfo, type Timeline, type TimelineSource, type TrustStatus } from "./api";
+import { Badge, Button, Empty, LoadError, Panel, SERIES, Segmented, Skeleton, StaleNote } from "./ui";
+import { useLoad } from "./useLoad";
 
 const CUTOFF = 0.265;
 const STATUS_TONE: Record<TrustStatus, "neutral" | "good" | "critical"> = { EXPLORING: "neutral", TRUSTED: "good", VETOED: "critical" };
@@ -69,23 +70,19 @@ function LeagueRows({ rows }: { rows: TimelineSource[] }) {
 }
 
 export function LearningTimeline({ refreshKey }: { refreshKey: number }) {
-  const [data, setData] = useState<Timeline | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const load = useLoad(() => api.timeline(), [refreshKey]);
+  const data: (Timeline & { cache?: CacheInfo }) | null = load.data;
   const [step, setStep] = useState(0);
   const [league, setLeague] = useState<MarketDomain | null>(null);
   const [playing, setPlaying] = useState(false);
   const [showTable, setShowTable] = useState(false);
 
+  // Jump to the newest settlement whenever a fresh timeline arrives.
   useEffect(() => {
-    api
-      .timeline()
-      .then((t) => {
-        setData(t);
-        setStep(Math.max(0, t.steps.length - 1));
-        setLeague((l) => l ?? t.domains.find((d) => d === "NBA") ?? t.domains[0] ?? null);
-      })
-      .catch((e: Error) => setError(e.message));
-  }, [refreshKey]);
+    if (!data) return;
+    setStep(Math.max(0, data.steps.length - 1));
+    setLeague((l) => l ?? data.domains.find((d) => d === "NBA") ?? data.domains[0] ?? null);
+  }, [data]);
 
   useEffect(() => {
     if (!playing || !data) return;
@@ -122,14 +119,15 @@ export function LearningTimeline({ refreshKey }: { refreshKey: number }) {
         ) : null
       }
     >
-      {error ? (
-        <Empty>{error}</Empty>
+      {!data && load.error ? (
+        <LoadError error={load.error} retrying={load.retrying} onRetry={load.reload} />
       ) : !data ? (
         <Skeleton rows={6} />
       ) : data.steps.length === 0 ? (
         <Empty>No settled markets on Walrus yet. Each settlement becomes a step here.</Empty>
       ) : (
         <div className="flex flex-col gap-4">
+          <StaleNote cache={data.cache} />
           <div className="flex items-center gap-3">
             <Button variant="ghost" onClick={() => (step >= data.steps.length - 1 ? (setStep(0), setPlaying(true)) : setPlaying((p) => !p))}>
               {playing ? "Pause" : "Play"}
