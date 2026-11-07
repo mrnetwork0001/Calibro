@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npx tsx *)",
+      "Bash(npx vitest *)",
+      "Bash(npx tsc *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(curl -s*https://relayer.memory.walrus.xyz*)",
+      "Bash(curl -s*https://sui-mainnet.gateway.tatum.io*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(~/.memwal/credentials.json)"
+    ]
+  }
+}
