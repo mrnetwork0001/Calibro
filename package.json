@@ -1,0 +1,49 @@
+{
+  "name": "calibro",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Calibro \u2014 Autonomous Bayesian Prediction & Sports-Odds Syndicate powered by Walrus Memory Mainnet, Tatum Sui RPC/Data APIs, and Sui x402/MPP Micropayments",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "tsx scripts/verify-setup.ts",
+    "memwal:provision": "tsx scripts/provision-memwal-account.ts",
+    "agent:portable": "tsx scripts/portable-agent-demo.ts",
+    "setup:keys": "tsx scripts/setup-keys.ts",
+    "train": "tsx scripts/train-mainnet.ts",
+    "train:preview": "tsx scripts/train-mainnet.ts --preview",
+    "buy:forecast": "tsx scripts/buy-forecast.ts",
+    "settle": "tsx scripts/settle.ts"
+  },
+  "dependencies": {
+    "@mysten-incubation/memwal": "^0.1.13",
+    "@mysten/seal": "^1.5.3",
+    "@mysten/sui": "^2.39.0",
+    "@mysten/wallet-standard": "^0.21.37",
+    "@mysten/walrus": "^1.2.38",
+    "lucide-react": "^0.511.0",
+    "next": "^15.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "tailwindcss": "^4.1.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.1"
+  }
+}
