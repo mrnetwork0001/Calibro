@@ -27,6 +27,11 @@ forecast after you paid, it answers 503 and the same receipt can be retried.
 - `/api/signals/top-pickers?marketId=<id>` — trust-weighted picks of Calibro's best human pickers. The 402 challenge carries `splits`: pay every share, to every picker, in one Sui transaction.
 - `/api/leaderboard` — Brier scores: Calibro, Polymarket, each specialist, and human pickers.
 - `/api/timeline` — settlement-by-settlement replay of the calibration ledger on Walrus.
+- `/api/record` — every settled game from Walrus Memory: Calibro vs Polymarket, Brier, paid sources with
+  their Sui tx digests, refused sources and why, post-mortem blob ids. Free, read-only.
+- `POST /api/evaluate/preview` with `{ "marketId": "<resolved market id>" }` — free preview on resolved
+  markets only: Calibro's real recalled record, signals computed in-process, nothing paid or written.
+  For upcoming markets, buy the forecast instead.
 
 ## Example
 
