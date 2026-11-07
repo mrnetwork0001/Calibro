@@ -1,6 +1,7 @@
 import { getLedgerSummary } from "@/lib/landing/ledger";
 import { qualifies } from "@/lib/picks/crowd";
-import { errorResponse, getMemory, jsonResponse, requireLive } from "@/lib/server/runtime";
+import { cacheInfo, pickBoard } from "@/lib/server/read-models";
+import { errorResponse, jsonResponse, requireLive } from "@/lib/server/runtime";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,7 +14,8 @@ export const maxDuration = 60;
 export async function GET(): Promise<Response> {
   try {
     requireLive();
-    const [cards, ledger, payouts] = await Promise.all([getMemory().recallScorecards(), getLedgerSummary(), getMemory().recallPayouts()]);
+    const [board, ledger] = await Promise.all([pickBoard(), getLedgerSummary()]);
+    const { scorecards: cards, payouts } = board.value;
     const earned = new Map<string, bigint>();
     for (const p of payouts) earned.set(p.owner, (earned.get(p.owner) ?? 0n) + BigInt(p.amountRaw));
     const users = cards
@@ -48,6 +50,7 @@ export async function GET(): Promise<Response> {
             specialists: [...specialists].map(([id, s]) => ({ id, samples: s.n, brier: s.n ? s.sum / s.n : null })),
           }
         : null,
+      cache: cacheInfo(board),
     });
   } catch (err) {
     return errorResponse(err);

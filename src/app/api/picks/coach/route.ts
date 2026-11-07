@@ -1,5 +1,6 @@
 import type { CoachPick } from "@/lib/picks/coach";
 import { normalizeSuiAddress } from "@/lib/tatum/sui-rpc";
+import { settledGames } from "@/lib/server/read-models";
 import { errorResponse, findMarket, getMemory, jsonResponse, requireLive } from "@/lib/server/runtime";
 
 export const runtime = "nodejs";
@@ -22,13 +23,14 @@ export async function GET(request: Request): Promise<Response> {
     requireLive();
     const memory = getMemory();
     const owner = raw ? normalizeSuiAddress(raw) : null;
-    const [market, settled, picks, scorecard] = await Promise.all([
+    const [market, settledCached, picks, scorecard] = await Promise.all([
       findMarket(marketId),
-      memory.recallSettledEpisodes(),
+      settledGames(),
       owner ? memory.findUserPicks(owner) : Promise.resolve([]),
       owner ? memory.recallScorecardWithBlob(owner) : Promise.resolve(null),
     ]);
     if (!market) return jsonResponse(404, { error: `Unknown market ${marketId}` });
+    const settled = settledCached.value;
     const graded: CoachPick[] = picks.flatMap(({ record: p }) =>
       p.outcome === undefined ? [] : [{ domain: p.domain, probability: p.probability, marketProbAtPick: p.marketProbAtPick, outcome: p.outcome }]
     );
