@@ -102,17 +102,14 @@ export function Drawer({ open, onClose, children, footer }: { open: boolean; onC
 
 /** A large, touch-sized drawer link. */
 export function DrawerLink({ href, children, active, external }: { href: string; children: ReactNode; active?: boolean; external?: boolean }) {
-  const cls = `flex min-h-12 items-center justify-between border-b border-paper/10 text-[17px] transition-colors ${active ? "text-paper" : "text-paper/75 hover:text-paper"}`;
-  const arrow = <span className="text-paper/35">→</span>;
+  const cls = `flex min-h-12 items-center border-b border-paper/10 text-[17px] transition-colors ${active ? "text-paper" : "text-paper/75 hover:text-paper"}`;
   return external || href.startsWith("#") ? (
     <a href={href} className={cls}>
       {children}
-      {arrow}
     </a>
   ) : (
     <Link href={href} className={cls}>
       {children}
-      {arrow}
     </Link>
   );
 }
