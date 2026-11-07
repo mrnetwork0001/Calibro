@@ -1,0 +1,34 @@
+# Calibro
+
+> Calibrated sports and prediction-market forecasts for agents, paid per call over HTTP 402
+> (x402 + MPP) on Sui Mainnet. Calibro scores every source it uses against real Polymarket
+> results and keeps that track record on Walrus Memory, so its forecast weights sources by
+> how often they were right.
+
+## Buy a forecast
+
+1. `GET /api/markets` — upcoming Polymarket markets (`source: "LIVE"`) with ids like `poly-nba-6409790`.
+2. `GET /api/forecast?marketId=<id>` → `402 Payment Required`. The challenge is in
+   `X-Payment-Required` (base64 JSON, x402 v1: `accepts[0].extra.challenge`) and in
+   `WWW-Authenticate: Payment ...` (MPP): `recipient`, `coinType`, `amount` (base units), `challengeId`.
+3. Pay `amount` of `coinType` to `recipient` on Sui Mainnet from your own address.
+4. Retry with header `X-Payment: <base64 JSON {"challengeId","txDigest","payer","network":"sui:mainnet","mode":"LIVE_MAINNET"}>`.
+5. `200` → `{ forecast, receipt, signature }`. `forecast.probability` is Calibro's calibrated P(YES);
+   `forecast.sources` lists the specialists it paid and their weights; `forecast.vetoed` the ones it
+   refused to pay and why; `forecast.thesisBlobId` is the sealed thesis on Walrus Memory.
+
+Receipts are single-use and verified via Tatum's Sui Mainnet gateway. If Calibro cannot produce the
+forecast after you paid, it answers 503 and the same receipt can be retried.
+
+## Other endpoints
+
+- `/.well-known/x402` — machine-readable catalog: products, prices, recipients, protocols.
+- `/api/signals/{sharp-steam|power-rating|onchain-flow|hype-contrarian|kalshi-crowd|manifold-crowd}?marketId=<id>` — individual source signals (0.002 SUI).
+- `/api/signals/top-pickers?marketId=<id>` — trust-weighted picks of Calibro's best human pickers. The 402 challenge carries `splits`: pay every share, to every picker, in one Sui transaction.
+- `/api/leaderboard` — Brier scores: Calibro, Polymarket, each specialist, and human pickers.
+- `/api/timeline` — settlement-by-settlement replay of the calibration ledger on Walrus.
+
+## Example
+
+`npx tsx scripts/buy-forecast.ts --server https://<host> --market poly-nba-<id>` in the Calibro repo
+is a complete external buyer (needs `BUYER_SUI_PRIVATE_KEY` with a little SUI).
