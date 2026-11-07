@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import type { MarketDomain, SpecialistId } from "@/lib/types/calibro";
 import type { CalibrationResponse, MarketEvaluation, SettleResponse } from "./api";
 import { DOMAIN_LABEL, SPECIALIST_LABEL, pct, short } from "./api";
-import { Badge, Button, Empty, ErrorLine, Panel, SERIES, Segmented } from "./ui";
+import { Badge, Button, Empty, ErrorLine, LoadError, Panel, SERIES, Segmented, Skeleton, StaleNote } from "./ui";
 
 const SPECIALISTS: SpecialistId[] = ["sharp-steam", "power-rating", "onchain-flow", "hype-contrarian", "kalshi-crowd", "manifold-crowd", "top-pickers"];
 const BINS = 5;
@@ -117,7 +117,13 @@ function Reliability({ calibro, specialist, specialistName }: { calibro: Bin[]; 
 
 export function CalibrationPanel(props: {
   data: CalibrationResponse | null;
+  /** Set when the last read failed (the panel then says so; it never shows an empty record) */
+  loadError?: string | null;
+  retrying?: boolean;
+  onRetry?: () => void;
   evaluation: MarketEvaluation | null;
+  /** Operator only: settling writes to Walrus */
+  canSettle?: boolean;
   settling: boolean;
   settleError: string | null;
   lastSettle: SettleResponse | null;
@@ -140,8 +146,28 @@ export function CalibrationPanel(props: {
   const isLive = props.evaluation?.market.source === "LIVE";
   const settle = props.lastSettle?.result;
 
+  const title = "Calibration ledger";
+  const kicker = "Each source's Brier score by league, recalled from Walrus Memory. Lower is better; 0.250 is a coin flip.";
+  if (!props.data) {
+    return (
+      <Panel delay={240} title={title} kicker={kicker}>
+        {props.loadError ? (
+          <LoadError error={props.loadError} retrying={Boolean(props.retrying)} onRetry={props.onRetry ?? (() => undefined)} />
+        ) : (
+          <Skeleton rows={7} />
+        )}
+      </Panel>
+    );
+  }
+
   return (
-    <Panel delay={240} title="Calibration ledger" kicker="Each source's Brier score by league, recalled from Walrus Memory. Lower is better; 0.250 is a coin flip.">
+    <Panel delay={240} title={title} kicker={kicker}>
+      <StaleNote cache={props.data.cache} />
+      {props.loadError && (
+        <p className="mb-3 text-[12px] text-warning-ink" title={props.loadError}>
+          ▲ Refreshing from Walrus failed; showing the record loaded earlier.
+        </p>
+      )}
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="min-w-0">
           <div className="mb-3">
@@ -189,6 +215,7 @@ export function CalibrationPanel(props: {
           </div>
           <p className="mt-2 text-[12px] text-ink-3">A source is refused once its Brier passes 0.265 after 4 settled games in a league.</p>
 
+          {props.canSettle ? (
           <div className="mt-6 border-t border-rule pt-4">
             <p className="text-[13px] text-ink-2">
               {evaluated ? (
@@ -225,6 +252,12 @@ export function CalibrationPanel(props: {
             )}
             {settle?.status === "ALREADY_SETTLED" && <p className="mt-2 text-[12px] text-ink-3">Already settled; nothing is written twice.</p>}
           </div>
+          ) : (
+            <p className="mt-6 border-t border-rule pt-4 text-[12px] leading-relaxed text-ink-3">
+              Settling writes the post-mortem to Walrus, so it&apos;s done by the operator and by the settlement job every 30 minutes, once Polymarket
+              resolves a game.
+            </p>
+          )}
         </div>
 
         <div className="min-w-0">
