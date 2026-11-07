@@ -1,11 +1,6 @@
-Execute **Phase 1: Core Walrus Memory, Tatum Sui RPC & Calibration Engine** of `CALIBRO_PROJECT_SPEC.md`.
+Check **Walrus Memory, Tatum and the calibration engine** against `CALIBRO_PROJECT_SPEC.md`.
 
-Steps:
-1. Inspect `src/lib/types/calibro.ts`, `src/lib/calibration/brier.ts`, `src/lib/walrus/memory-client.ts`, and `src/lib/tatum/sui-rpc.ts`.
-2. Build `src/lib/orchestrator/syndicate-engine.ts` that wires the full closed loop:
-   - Step A: Recall active mandate (`calibro:mandates`), latest domain calibrations (`calibro:calibration` with `sort: "recent"`), and analogous past markets (`calibro:episodic` with `sort: "relevance"`).
-   - Step B: Evaluate `shouldPayX402Gate()` for each of the 4 specialists (`sharp-steam`, `injury-scout`, `onchain-flow`, `hype-contrarian`), converting the SUI/USDC `x402` fee into USD via Tatum's live rate (with deterministic fallback if offline).
-   - Step C: Aggregate unlocked signals via Platt log-odds de-biasing + inverse-Brier precision weighting, then run the Fractional Kelly gate against bookmaker vs on-chain implied odds.
-   - Step D: Provide `settleMarketAndLearn()` which computes per-specialist Brier deltas, updates Platt `(alphaSlope, betaIntercept)` via online gradient/shrinkage update, and writes both the settled episodic record and updated calibration records back to Walrus Memory (`rememberAndWait` / `rememberBulkAndWait`).
-3. Add thorough Vitest tests in `tests/syndicate-engine.test.ts` verifying Epoch 1 -> Epoch 12 learning on `MemWalMock`.
+1. Read `src/lib/types/calibro.ts`, `src/lib/calibration/brier.ts`, `src/lib/walrus/memory-client.ts`, `src/lib/tatum/sui-rpc.ts` and `src/lib/orchestrator/syndicate-engine.ts`.
+2. Confirm the loop: recall (`calibro:mandates`, per-pair `calibro:calibration`, `calibro:episodic`), gate for the seven sources, Platt + trust-weight aggregation, quarter-Kelly, and `settleMarketAndLearn()` writing checkpoints and the post-mortem.
+3. Tatum calls go to the GraphQL gateway (`https://sui-mainnet.gateway.tatum.io/graphql`) through `createTatumFetch()`; rates come from Tatum v4 with no static fallback.
 4. Run `npm run typecheck && npm test && npm run verify` and report exact results.
