@@ -2,7 +2,7 @@
 
 import type { AuditResponse } from "./api";
 import { walruscanBlob } from "./api";
-import { Badge, Empty, ErrorLine, ModeBadge } from "./ui";
+import { Badge, Empty, LoadError, ModeBadge, StaleNote } from "./ui";
 
 export function WalrusDrawer(props: {
   open: boolean;
@@ -10,6 +10,7 @@ export function WalrusDrawer(props: {
   audit: AuditResponse | null;
   error: string | null;
   loading: boolean;
+  onRetry?: () => void;
 }) {
   if (!props.open) return null;
   const a = props.audit;
@@ -37,9 +38,10 @@ export function WalrusDrawer(props: {
             <Empty>Walking listNamespaces() + listMemories()…</Empty>
           ) : (
             <>
-              <ErrorLine error={props.error} />
+              {props.error && <LoadError error={props.error} retrying={props.loading} onRetry={props.onRetry ?? (() => undefined)} compact={Boolean(a)} />}
               {a && (
                 <>
+                  <StaleNote cache={a.cache} />
                   <div className="mb-3 flex flex-wrap items-center gap-2">
                     <ModeBadge mode={a.mode.mode} />
                     <Badge tone={live && a.totalMemories >= 10 ? "good" : "warning"}>{a.totalMemories} memories</Badge>
