@@ -149,10 +149,13 @@ export function fileReadCacheStore(dir: string): Store {
 
 const inflight = new Map<string, Promise<unknown>>();
 
-/** Loads once per key at a time (per process), with one retry for relayer blips. */
-function reload<T>(name: string, load: () => Promise<T>, gen: number): Promise<T> {
+/**
+ * Loads once per key at a time (per process), with one retry for relayer blips. Resolves to
+ * the stored entry, so the caller reports the same read time that later readers will see.
+ */
+function reload<T>(name: string, load: () => Promise<T>, gen: number): Promise<Entry<T>> {
   const running = inflight.get(name);
-  if (running) return running as Promise<T>;
+  if (running) return running as Promise<Entry<T>>;
   const p = (async () => {
     let value: T;
     try {
@@ -161,10 +164,11 @@ function reload<T>(name: string, load: () => Promise<T>, gen: number): Promise<T
       await new Promise((r) => setTimeout(r, 1_500));
       value = await load();
     }
+    const stored: Entry<T> = { value, at: Date.now(), gen };
     await readCacheStore()
-      .write(name, { value, at: Date.now(), gen })
+      .write(name, stored)
       .catch((err) => console.warn(`[read-cache] could not store ${name}:`, err instanceof Error ? err.message : err));
-    return value;
+    return stored;
   })().finally(() => inflight.delete(name));
   inflight.set(name, p);
   return p;
@@ -195,8 +199,8 @@ export async function readThrough<T>(name: string, load: () => Promise<T>, opts:
   }
 
   try {
-    const value = await reload(name, load, gen);
-    return { value, asOf: new Date().toISOString(), stale: false };
+    const loaded = await reload(name, load, gen);
+    return { value: loaded.value, asOf: new Date(loaded.at).toISOString(), stale: false };
   } catch (err) {
     if (entry) {
       return { value: entry.value, asOf: new Date(entry.at).toISOString(), stale: true, error: err instanceof Error ? err.message : String(err) };
