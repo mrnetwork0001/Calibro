@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { SuiLogo } from "../brand/SuiLogo";
 import { asOfLabel, friendlyError } from "./api";
 
 /** Reserved status palette (never reused for series). Always rendered with an icon + label. */
@@ -71,7 +72,10 @@ export function Badge({ tone, children, title }: { tone: Tone; children: ReactNo
 export function ModeBadge({ mode }: { mode: "LIVE_MAINNET" | "UNCONFIGURED" | undefined }) {
   if (!mode) return <Badge tone="neutral">Connecting…</Badge>;
   return mode === "LIVE_MAINNET" ? (
-    <Badge tone="good">Sui Mainnet</Badge>
+    <Badge tone="good" title="Connected to Sui Mainnet">
+      <SuiLogo height={12} className="text-ink" />
+      Mainnet
+    </Badge>
   ) : (
     <Badge tone="warning" title="Walrus Memory / Tatum keys are missing: read-only until configured.">
       Not configured

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useState, type ReactNode } from "react";
 import { Burger, Drawer, DrawerLink } from "../mobile/Drawer";
 import { BrandMark } from "../brand/BrandMark";
+import { SuiLogo } from "../brand/SuiLogo";
 import type { StatusResponse } from "./api";
 import { short } from "./api";
 
@@ -155,9 +156,18 @@ export function PageTitle({ title, children }: { title: string; children: ReactN
 function LiveMode({ mode }: { mode: "LIVE_MAINNET" | "UNCONFIGURED" | undefined }) {
   const on = mode === "LIVE_MAINNET";
   return (
-    <span className="inline-flex items-center gap-2 text-[13px] text-paper/80">
+    <span className="inline-flex items-center gap-2 text-[13px] text-paper/80" title={on ? "Connected to Sui Mainnet" : undefined}>
       <span className={`inline-block h-1.5 w-1.5 rounded-full ${on ? "live-dot bg-[#4cc26a]" : mode ? "bg-[#fab219]" : "bg-paper/40"}`} />
-      {on ? "Sui Mainnet" : mode ? "Not configured" : "Connecting…"}
+      {on ? (
+        <>
+          <SuiLogo height={15} className="text-paper" />
+          <span>Mainnet</span>
+        </>
+      ) : mode ? (
+        "Not configured"
+      ) : (
+        "Connecting…"
+      )}
     </span>
   );
 }
