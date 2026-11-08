@@ -76,7 +76,15 @@ export async function getLedgerSummary(): Promise<LedgerSummary | null> {
 export interface HeroSeries {
   league: MarketDomain;
   settlements: number;
-  series: Array<{ id: SpecialistCalibrationRecord["specialistId"]; points: Array<number | null>; final: number; samples: number; refused: boolean }>;
+  series: Array<{
+    id: SpecialistCalibrationRecord["specialistId"];
+    points: Array<number | null>;
+    /** Trust status after each settlement (same replay as the learning timeline) */
+    statuses: Array<"EXPLORING" | "TRUSTED" | "VETOED" | null>;
+    final: number;
+    samples: number;
+    refused: boolean;
+  }>;
 }
 
 let lastHero: HeroSeries | null = null;
@@ -100,8 +108,9 @@ export async function getHeroSeries(): Promise<HeroSeries | null> {
       settlements: steps.length,
       series: ids.map((id) => {
         const points = steps.map((s) => s.league.find((r) => r.specialistId === id)?.brier ?? null);
+        const statuses = steps.map((s) => s.league.find((r) => r.specialistId === id)?.status ?? null);
         const last = [...steps].reverse().find((s) => s.league.some((r) => r.specialistId === id))!.league.find((r) => r.specialistId === id)!;
-        return { id, points, final: last.brier, samples: last.samples, refused: last.status === "VETOED" };
+        return { id, points, statuses, final: last.brier, samples: last.samples, refused: last.status === "VETOED" };
       }),
     };
     lastHero = hero;
