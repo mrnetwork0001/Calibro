@@ -385,3 +385,34 @@ figure {
     transition: none !important;
   }
 }
+
+/* Hero replay: the refusal cutoff flows, and the refused source's dot sends out a ring. */
+@keyframes cutoff-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+.cutoff-flow {
+  animation: cutoff-flow 1.4s linear infinite;
+}
+@keyframes ring-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+.ring-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ring-pulse 1.6s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cutoff-flow,
+  .ring-pulse {
+    animation: none;
+  }
+}
