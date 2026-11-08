@@ -33,9 +33,9 @@
   --color-series-1: #2a78d6;
   --color-series-2: #eb6834;
 
-  --font-serif: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
+  --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
 }
 
 :root {
