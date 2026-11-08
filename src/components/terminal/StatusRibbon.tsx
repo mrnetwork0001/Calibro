@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useState, type ReactNode } from "react";
 import { Burger, Drawer, DrawerLink } from "../mobile/Drawer";
+import { BrandMark } from "../brand/BrandMark";
 import type { StatusResponse } from "./api";
 import { short } from "./api";
 
@@ -39,9 +40,9 @@ export function AppHeader({
     <header className="sticky top-0 z-50 border-b border-paper/10 bg-ink text-paper">
       {/* Desktop: three columns, brand left, sections centred on the page, status right. */}
       <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-4 px-4 min-[901px]:grid min-[901px]:h-auto min-[901px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] min-[901px]:gap-6 min-[901px]:px-6">
-        <Link href="/" className="group flex items-baseline gap-2 justify-self-start" title="Back to the landing page">
+        <Link href="/" className="group flex items-center gap-2.5 justify-self-start" title="Back to the landing page">
+          <BrandMark size={28} tone="dark" />
           <span className="font-serif text-[22px] leading-none font-semibold tracking-tight text-paper">Calibro</span>
-          <span className="inline-block h-1.5 w-1.5 translate-y-[-2px] bg-[#e0663c]" aria-hidden />
         </Link>
         <nav className="hidden gap-8 justify-self-center min-[901px]:flex" aria-label="App sections">
           {tab("/app", "Terminal", active === "terminal")}

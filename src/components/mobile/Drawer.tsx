@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { BrandMark } from "../brand/BrandMark";
 
 /** Burger button that morphs into an ×. Shown only at ≤ 900px. */
 export function Burger({ open, onToggle, label = "Open menu" }: { open: boolean; onToggle: () => void; label?: string }) {
@@ -78,9 +79,9 @@ export function Drawer({ open, onClose, children, footer }: { open: boolean; onC
         className="drawer grain grain-light fixed inset-y-0 left-0 z-[70] flex h-[100dvh] w-[min(88vw,320px)] flex-col overflow-y-auto border-r border-paper/10 bg-ink text-paper min-[901px]:hidden"
       >
         <div className="relative z-10 flex h-14 shrink-0 items-center justify-between border-b border-paper/10 px-5">
-          <Link href="/" className="flex items-baseline gap-2">
+          <Link href="/" className="flex items-center gap-2.5">
+            <BrandMark size={26} tone="dark" />
             <span className="font-serif text-[22px] leading-none font-semibold tracking-tight">Calibro</span>
-            <span className="inline-block h-1.5 w-1.5 translate-y-[-2px] bg-[#e0663c]" aria-hidden />
           </Link>
           <button
             ref={closeRef}

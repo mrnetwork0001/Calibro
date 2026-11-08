@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
+import { BrandMark } from "@/components/brand/BrandMark";
 import { CountUp } from "@/components/motion/CountUp";
 import { Reveal } from "@/components/motion/Reveal";
 import { HeroChart } from "@/components/landing/HeroChart";
@@ -513,14 +514,11 @@ export default function LandingPage() {
       {/* Sticky for the whole page: a direct child of the page, never inside the clipped hero. */}
       <header className="sticky top-0 z-50 border-b border-paper/10 bg-ink text-paper">
         <div className="mx-auto flex h-14 w-full max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-10">
-          <Link href="/" className="flex items-baseline gap-2">
+          <Link href="/" className="flex items-center gap-2.5" aria-label="Calibro home">
+            <BrandMark size={28} tone="dark" />
             <span className="font-serif text-[22px] leading-none font-semibold tracking-tight text-paper">
               Calibro
             </span>
-            <span
-              className="inline-block h-1.5 w-1.5 translate-y-[-2px] bg-[#e0663c]"
-              aria-hidden
-            />
           </Link>
           <LandingNav />
         </div>
@@ -850,7 +848,10 @@ GET … X-Payment: { txDigest, challengeId, payer }        200 OK, signed signal
             </div>
           </Reveal>
           <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t sm:mt-20 border-paper/10 pt-6 text-[13px] text-paper/50">
-            <span className="font-serif text-[17px] text-paper">Calibro</span>
+            <span className="flex items-center gap-2 font-serif text-[17px] text-paper">
+              <BrandMark size={22} tone="dark" />
+              Calibro
+            </span>
             <div className="flex gap-6">
               <Link href="/app" className="hover:text-paper">
                 Terminal
