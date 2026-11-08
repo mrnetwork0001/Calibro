@@ -75,7 +75,7 @@ export function getLedger(): { ledger: ReplayLedger | null; error?: string } {
   else if (process.env.VERCEL) {
     state.ledger = null;
     state.ledgerError =
-      "No shared replay ledger: set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN (or Vercel KV) to sell signals on Vercel.";
+      "No shared replay ledger: connect Upstash Redis or Vercel KV (UPSTASH_REDIS_REST_URL + _TOKEN or KV_REST_API_URL + _TOKEN, a prefix is fine) and redeploy to sell signals on Vercel.";
   } else {
     state.ledger = new FileReplayLedger(`${process.cwd()}/.calibro/redeemed-receipts.json`);
   }

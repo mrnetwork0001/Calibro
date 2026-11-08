@@ -20,6 +20,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after } from "next/server";
+import { redisRestEnv } from "./redis-env";
 
 export interface Cached<T> {
   value: T;
@@ -129,11 +130,10 @@ let store: Store | null = null;
 
 export function readCacheStore(): Store {
   if (store) return store;
-  const url = (process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL)?.trim().replace(/\/$/, "");
-  const token = (process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN)?.trim();
+  const creds = redisRestEnv();
   store =
-    url && token
-      ? new RedisStore(url, token)
+    creds
+      ? new RedisStore(creds.url, creds.token)
       : new FileStore(process.env.CALIBRO_CACHE_DIR?.trim() || (process.env.VERCEL ? join(tmpdir(), "calibro-cache") : join(process.cwd(), ".calibro", "cache")));
   return store;
 }

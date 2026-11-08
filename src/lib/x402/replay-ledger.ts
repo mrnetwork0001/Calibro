@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { redisRestEnv } from "../server/redis-env";
 
 /**
  * Anti-replay ledger for x402 receipts. A key (Sui txDigest, or challengeId for
@@ -85,9 +86,8 @@ export class RedisReplayLedger implements ReplayLedger {
   ) {}
 
   static fromEnv(env: Record<string, string | undefined> = process.env): RedisReplayLedger | null {
-    const url = (env.UPSTASH_REDIS_REST_URL ?? env.KV_REST_API_URL)?.trim();
-    const token = (env.UPSTASH_REDIS_REST_TOKEN ?? env.KV_REST_API_TOKEN)?.trim();
-    return url && token ? new RedisReplayLedger(url.replace(/\/$/, ""), token) : null;
+    const creds = redisRestEnv(env);
+    return creds ? new RedisReplayLedger(creds.url, creds.token) : null;
   }
 
   private async command<T>(args: Array<string | number>): Promise<T> {

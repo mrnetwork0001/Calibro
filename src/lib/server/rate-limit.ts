@@ -2,12 +2,14 @@
  * Fixed-window rate limits. Uses the same Upstash / Vercel KV REST store as the replay
  * ledger when configured (shared across instances); in-process otherwise.
  */
+import { redisRestEnv } from "./redis-env";
+
 const local = new Map<string, { count: number; resetAt: number }>();
 
 export async function rateLimit(key: string, limit: number, windowSec: number): Promise<{ ok: boolean; remaining: number }> {
-  const url = (process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL)?.trim().replace(/\/$/, "");
-  const token = (process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN)?.trim();
-  if (url && token) {
+  const creds = redisRestEnv();
+  if (creds) {
+    const { url, token } = creds;
     const res = await fetch(`${url}/pipeline`, {
       method: "POST",
       headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
