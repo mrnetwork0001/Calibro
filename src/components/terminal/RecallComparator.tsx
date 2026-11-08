@@ -9,7 +9,10 @@ import { Badge, Button, Empty, Panel, Skeleton } from "./ui";
 /** One agent's decision: which sources it paid, how it weighted them, what it would do. */
 function Side({ title, note, ev, unavailable, preview }: { title: string; note: string; ev: MarketEvaluation; unavailable: Set<string>; preview?: boolean }) {
   const t = ev.thesis;
-  const spentSui = ev.slate.spentSui;
+  // Fees of the signals actually used. The slate budget also reserves fees for sources that
+  // turned out to have no data and were never charged, so it would overstate what was paid.
+  const feeOf = (id: string) => ev.gates.find((g) => g.specialistId === id)?.fee.feeSuiEquivalent ?? 0;
+  const spentSui = t.signalsUsed.reduce((acc, s) => acc + feeOf(s.specialistId), 0);
   const savedSui = t.signalsVetoed.reduce((acc, v) => acc + Number(v.savedFeeSui), 0);
   const leg = ev.chosenLeg;
   const take = t.recommendedAction === "TAKE_EDGE";
