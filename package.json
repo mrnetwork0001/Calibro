@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Calibro \u2014 Autonomous Bayesian Prediction & Sports-Odds Syndicate powered by Walrus Memory Mainnet, Tatum Sui RPC/Data APIs, and Sui x402/MPP Micropayments",
+  "description": "Calibro — Autonomous Bayesian Prediction & Sports-Odds Syndicate powered by Walrus Memory Mainnet, Tatum Sui RPC/Data APIs, and Sui x402/MPP Micropayments",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=20.0.0"
@@ -25,6 +25,9 @@
     "settle": "tsx scripts/settle.ts"
   },
   "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/newsreader": "^5.3.0",
     "@mysten-incubation/memwal": "^0.1.13",
     "@mysten/seal": "^1.5.3",
     "@mysten/sui": "^2.39.0",
