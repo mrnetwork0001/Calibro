@@ -75,7 +75,7 @@ export class HttpX402SignalProvider implements SpecialistSignalProvider {
         amountRaw: challenge.amountRaw,
         coinType: challenge.coinType,
         feeUsd: fee.feeUsd,
-        detail: `402 Payment Required · ${challenge.amountRaw} ${challenge.coinType.split("::").pop()} → ${challenge.recipient.slice(0, 10)}…`,
+        detail: `402 Payment Required · ${formatAmount(challenge.amountRaw, challenge.coinType)} → ${challenge.recipient.slice(0, 10)}…`,
       });
 
       // Never pay more, or in a different coin, than the VoI gate approved.
@@ -151,4 +151,16 @@ export class HttpX402SignalProvider implements SpecialistSignalProvider {
       throw err;
     }
   }
+}
+
+const SUI_COIN = normalizeCoinType("0x2::sui::SUI");
+
+/** "0.002 SUI" for a SUI amount in MIST; other coins keep their base units, named as such. */
+export function formatAmount(amountRaw: string, coinType: string): string {
+  const symbol = coinType.split("::").pop() ?? coinType;
+  if (normalizeCoinType(coinType) !== SUI_COIN) return `${amountRaw} base units of ${symbol}`;
+  const mist = BigInt(amountRaw);
+  const whole = mist / 1_000_000_000n;
+  const frac = (mist % 1_000_000_000n).toString().padStart(9, "0").replace(/0+$/, "");
+  return `${whole}${frac ? `.${frac}` : ""} SUI`;
 }
