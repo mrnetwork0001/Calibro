@@ -5,7 +5,7 @@ import { buildEngine, errorResponse, findMarket, forecastPaymentConfig, getLedge
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 300; // Vercel Fluid compute allows up to 300 s on Hobby
 
 /**
  * GET /api/forecast?marketId=…  — Calibro's calibrated forecast, sold over HTTP 402

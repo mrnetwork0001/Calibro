@@ -3,7 +3,7 @@ import { cronAuthorized, errorResponse, jsonResponse } from "@/lib/server/runtim
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 300; // Vercel Fluid compute allows up to 300 s on Hobby
 
 /**
  * Reloads the read models (settled games, inventory, counts, pick scorecards) from Walrus

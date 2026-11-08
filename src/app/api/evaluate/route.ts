@@ -12,7 +12,7 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 300; // Vercel Fluid compute allows up to 300 s on Hobby
 
 /**
  * POST { marketId, compare?: boolean }

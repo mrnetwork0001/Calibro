@@ -5,11 +5,11 @@ import { buildEngine, cronAuthorized, errorResponse, getMemory, jsonResponse, re
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 300; // Vercel Fluid compute allows up to 300 s on Hobby
 
 const MAX_PER_RUN = 3;
-/** Stop starting new work after this long, so a run finishes inside the 60 s function limit. */
-const BUDGET_MS = 35_000;
+/** Stop starting new work after this long, so a run finishes inside the 300 s function limit. */
+const BUDGET_MS = 240_000;
 
 /**
  * Scheduled settlement (Vercel Cron, see vercel.json). Finds open theses on Walrus,
