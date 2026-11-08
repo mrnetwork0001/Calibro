@@ -76,7 +76,7 @@ export function loadTopPickers(
   const key = `${market.marketId}|${totalRaw}`;
   const hit = cache.get(key);
   if (hit && now.getTime() - hit.at < 60_000) return hit.value;
-  const value = (async () => {
+  const attempt = async () => {
     const picks = (await memory.findMarketPicks(market.marketId)).filter((p) => Date.parse(p.record.pickedAt) <= now.getTime());
     const entries = (
       await Promise.all(
@@ -87,9 +87,18 @@ export function loadTopPickers(
       )
     ).filter((e): e is PickerEntry => e !== null);
     return combineTopPickers(entries, totalRaw, exclude);
+  };
+  const value = (async () => {
+    // Semantic recall occasionally misses a fresh pick or scorecard: look once more before
+    // telling a buyer that no qualified picker has picked this game.
+    const first = await attempt();
+    if (first) return first;
+    await new Promise((r) => setTimeout(r, 1_500));
+    return attempt();
   })();
   cache.set(key, { at: now.getTime(), value });
-  value.catch(() => cache.delete(key));
+  // Only a positive answer is cached; "no picker yet" is re-checked on the next request.
+  value.then((v) => v === null && cache.delete(key)).catch(() => cache.delete(key));
   return value;
 }
 
