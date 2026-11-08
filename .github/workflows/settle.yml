@@ -2,7 +2,7 @@ name: Settle & grade
 
 # Calls the deployed app's settlement job every 30 minutes, then refills its read cache
 # (Vercel's Hobby plan only runs its own crons daily; vercel.json keeps a daily fallback).
-# Needs repository secrets CALIBRO_URL (e.g. https://calibro.vercel.app) and CRON_SECRET
+# Needs repository secrets CALIBRO_URL (e.g. https://www.trycalibro.xyz) and CRON_SECRET
 # (same value as the deployment's CRON_SECRET).
 on:
   schedule:

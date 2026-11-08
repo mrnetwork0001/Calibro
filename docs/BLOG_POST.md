@@ -1,5 +1,7 @@
 # Teaching a prediction agent who to trust: Walrus Memory, Sui x402 and Tatum
 
+*Try it at [www.trycalibro.xyz](https://www.trycalibro.xyz). Code: [github.com/mrnetwork0001/Calibro](https://github.com/mrnetwork0001/Calibro).*
+
 Most prediction agents start every session with amnesia. They buy the same paid signals every time, weigh a sharp line-movement model the same as a sentiment scraper, and learn nothing when a source is confidently wrong. If they do log results, the log sits in one machine's SQLite file, where no other runtime can use it and nobody can verify it.
 
 Calibro is an attempt to fix that with three pieces of infrastructure: **Walrus Memory** for a portable, encrypted track record; **HTTP 402 payments on Sui** (x402 + MPP) so signals cost real money; and **Tatum's Sui Mainnet gateway** to verify every payment receipt. Everything runs on real data: Polymarket markets and resolutions, DraftKings lines and ESPN's BPI.

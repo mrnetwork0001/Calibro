@@ -2,6 +2,8 @@
 
 **An autonomous Bayesian prediction syndicate that remembers which sources were wrong.**
 
+**Live app:** [www.trycalibro.xyz](https://www.trycalibro.xyz) · [every settled game, with its Sui payments and Walrus records](https://www.trycalibro.xyz/app/record)
+
 Calibro compares sportsbook and Polymarket prices on real NBA, EPL, UFC and crypto markets, buys specialist signals behind **HTTP 402** gates (**x402 + MPP**) settled on **Sui Mainnet**, verifies every receipt through **Tatum's Sui Mainnet gateway** (Sui GraphQL), and keeps a per-league calibration ledger on **Walrus Memory Mainnet** (`@mysten-incubation/memwal`, SEAL-encrypted). Every market is settled to Polymarket's own resolution. Once a source's recalled track record is bad, Calibro refuses to pay it; the rest are de-biased and weighted by their record, and stakes are sized with quarter-Kelly.
 
 There is no mock data and no sandbox mode: markets, prices, sportsbook lines and results are real, and without Walrus keys the app is read-only.

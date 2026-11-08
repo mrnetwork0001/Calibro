@@ -2,12 +2,12 @@
 
 **Before recording**
 - `npm run verify` is OK for Walrus, Tatum, the agent wallet and the data sources. The agent wallet holds at least 0.05 SUI (one evaluation costs about 0.015 SUI: up to six 0.002 SUI payments plus gas).
-- The app is running (deployed URL, or `npm run dev -- --port 3004`). Warm the read cache once: open `/app/record`, or call `GET /api/cron/warm` with the cron secret.
+- The app is running (https://www.trycalibro.xyz, or `npm run dev -- --port 3004`). Warm the read cache once: open `/app/record`, or call `GET /api/cron/warm` with the cron secret.
 - In the terminal, filter **Resolved** and note two NBA games: one marked **settled** (for the visitor preview) and one not settled (for the live run). The terminal lists the four newest resolved games per league.
 - Log a few real picks from your own wallet a day ahead so the Pick journal has a graded scorecard; run `npm run settle` after the games if you're local.
 - Two browser windows: a private one with no admin token (visitor), and a normal one where you'll unlock the operator mode.
 - A second terminal with the portable-agent command ready (last step).
-- The header shows the green **Sui Mainnet** dot and the memory count. If it says **Not configured**, stop and fix the environment.
+- The header shows the green dot with the **Sui logo** and "Mainnet", and the memory count. If it says **Not configured**, stop and fix the environment.
 
 | Time | Screen | Say |
 |---|---|---|
