@@ -4,7 +4,7 @@
  * the ground truth used to settle every market.
  */
 import type { MarketDomain } from "../types/calibro";
-import { getJson } from "./http";
+import { getJson, HttpError } from "./http";
 
 const GAMMA = "https://gamma-api.polymarket.com";
 const CLOB = "https://clob.polymarket.com";
@@ -164,7 +164,14 @@ export function toPolyMarketInfo(m: GammaMarket, domain: MarketDomain, eventTitl
 export async function getPolyMarket(marketId: string): Promise<PolyMarketInfo | null> {
   const parsed = parseMarketId(marketId);
   if (!parsed) return null;
-  const m = await getJson<GammaMarket>(`${GAMMA}/markets/${parsed.polymarketId}`, { ttlMs: 30_000 });
+  let m: GammaMarket;
+  try {
+    m = await getJson<GammaMarket>(`${GAMMA}/markets/${parsed.polymarketId}`, { ttlMs: 30_000 });
+  } catch (err) {
+    // An id Polymarket doesn't know is "no such market" (callers answer 404), not an outage.
+    if (err instanceof HttpError && (err.status === 404 || err.status === 422)) return null;
+    throw err;
+  }
   return toPolyMarketInfo(m, parsed.domain);
 }
 
