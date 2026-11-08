@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { registerSlushWallet } from "@mysten/slush-wallet";
 import {
   getWallets,
   isWalletWithRequiredFeatureSet,
@@ -12,6 +13,22 @@ import {
 type SignerWallet = Wallet & { features: SuiSignPersonalMessageFeature & Wallet["features"] };
 const LAST_WALLET = "calibro-last-wallet";
 
+/**
+ * Slush's web wallet (sign in with Google or email, no extension) registered as a standard
+ * wallet, so anyone can connect, including on phones. It steps aside on its own when the
+ * Slush extension is installed. Registered once per page.
+ */
+let slushRegistered = false;
+function ensureSlushWebWallet() {
+  if (slushRegistered) return;
+  slushRegistered = true;
+  try {
+    registerSlushWallet("Calibro");
+  } catch (err) {
+    console.warn("[wallet] Slush web wallet unavailable:", err instanceof Error ? err.message : err);
+  }
+}
+
 /** Minimal Sui Wallet Standard connection: discover, connect, sign personal messages. */
 export function useSuiWallet() {
   const [wallets, setWallets] = useState<SignerWallet[]>([]);
@@ -20,6 +37,7 @@ export function useSuiWallet() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    ensureSlushWebWallet();
     const api = getWallets();
     const update = () =>
       setWallets(
