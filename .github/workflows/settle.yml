@@ -12,7 +12,7 @@ on:
 jobs:
   settle:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
       - name: Run /api/cron/settle
         env:
@@ -20,7 +20,7 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           if [ -z "$CALIBRO_URL" ] || [ -z "$CRON_SECRET" ]; then echo "CALIBRO_URL / CRON_SECRET not set; skipping."; exit 0; fi
-          curl -sS --fail-with-body --max-time 90 -H "Authorization: Bearer $CRON_SECRET" "$CALIBRO_URL/api/cron/settle"
+          curl -sS --fail-with-body --max-time 300 -H "Authorization: Bearer $CRON_SECRET" "$CALIBRO_URL/api/cron/settle"
 
       # Refill the shared read cache (settled games, inventory, scorecards) so visitors never
       # wait on a cold Walrus recall. Runs even if settling failed.
@@ -31,4 +31,4 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           if [ -z "$CALIBRO_URL" ] || [ -z "$CRON_SECRET" ]; then echo "CALIBRO_URL / CRON_SECRET not set; skipping."; exit 0; fi
-          curl -sS --fail-with-body --max-time 90 -H "Authorization: Bearer $CRON_SECRET" "$CALIBRO_URL/api/cron/warm"
+          curl -sS --fail-with-body --max-time 300 -H "Authorization: Bearer $CRON_SECRET" "$CALIBRO_URL/api/cron/warm"
