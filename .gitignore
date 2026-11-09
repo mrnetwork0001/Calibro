@@ -32,3 +32,6 @@ coverage/
 
 # production build next to a running dev server
 /.next-build/
+
+# Demo film (video/): kept local, not part of the repo
+/video/

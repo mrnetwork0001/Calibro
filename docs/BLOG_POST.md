@@ -1,6 +1,6 @@
 # Teaching a prediction agent who to trust: Walrus Memory, Sui x402 and Tatum
 
-*Try it at [www.trycalibro.xyz](https://www.trycalibro.xyz). Code: [github.com/mrnetwork0001/Calibro](https://github.com/mrnetwork0001/Calibro).*
+*Try it at [www.trycalibro.xyz](https://www.trycalibro.xyz). Code: [github.com/mrnetwork0001/Calibro](https://github.com/mrnetwork0001/Calibro). Built for Total Recall, the Tatum × Walrus Memory hackathon.*
 
 Most prediction agents start every session with amnesia. They buy the same paid signals every time, weigh a sharp line-movement model the same as a sentiment scraper, and learn nothing when a source is confidently wrong. If they do log results, the log sits in one machine's SQLite file, where no other runtime can use it and nobody can verify it.
 
@@ -86,17 +86,15 @@ The first version of Calibro trained on synthetic games with simulated vendors o
 
 ## Results (real resolved games, live on Mainnet)
 
-I trained Calibro live: every signal bought with a real Sui payment and verified through Tatum, every thesis, post-mortem and calibration checkpoint written to Walrus. As of 7 November 2026 the training run covers 37 real games played between 31 October and 7 November 2026 (23 NBA, 7 EPL, 7 UFC):
+I trained Calibro live: every signal bought with a real Sui payment and verified through Tatum, every thesis, post-mortem and calibration checkpoint written to Walrus. As of 9 November 2026 the record covers 41 real games played between 31 October and 8 November 2026 (27 NBA, 7 EPL, 7 UFC). Mean Brier score, lower is better:
 
-| | Mean Brier |
-|---|---|
-| Polymarket price | 0.181 |
-| Calibro | 0.188 |
-| Equal-weight average | 0.186 |
+- **Polymarket price:** 0.185
+- **Equal-weight average of the sources:** 0.192
+- **Calibro:** 0.194
 
-The interesting part is what Calibro learned. HypeContrarian's Brier crossed the 0.265 cutoff after four games in each league (0.31 to 0.35), and Calibro refused to pay it 25 times from then on (19 NBA, 3 EPL, 3 UFC). The other sources stayed between 0.14 and 0.22, close to the market, and kept being bought: 124 paid signals, each with a Sui digest. KalshiCrowd and ManifoldCrowd were added late (9 and 8 of the 37 games) and earned *paid* status in the NBA after their four exploration games.
+The interesting part is what Calibro learned. HypeContrarian's Brier crossed the 0.265 cutoff after four games in each league (0.31 to 0.35), and Calibro refused to pay it 29 times from then on (23 NBA, 3 EPL, 3 UFC). An agent with no memory would have paid it all 41 times. The other sources stayed between 0.18 and 0.22, close to the market, and kept being bought: 144 paid signals, each with a Sui digest. KalshiCrowd and ManifoldCrowd were added late (13 and 11 of the 41 games) and earned *paid* status in the NBA after their four exploration games.
 
-It did not beat the market. Paper P&L on a $2,500 bankroll was −$313: on efficient markets, a small "edge" from sources that mostly echo the price is noise. I'm reporting that rather than tuning thresholds on the same games until the number turns green.
+It did not beat the market, and it did not beat a plain average of its own sources either. Paper P&L on a $2,500 bankroll was −$394: on efficient markets, a small "edge" from sources that mostly echo the price is noise. I'm reporting that rather than tuning thresholds on the same games until the number turns green.
 
 ## Third-party voices
 
@@ -112,7 +110,7 @@ The track brief asks for an app that remembers its users. Two features make Cali
 
 **The pick coach.** Before you sign, Calibro recalls your graded picks and scorecard from Walrus and shows what they say about the number on the slider. For example: how often your past picks at this confidence actually won, as a shrunk estimate you can adopt with one click; and how you've done when you disagreed with the market. Until you have history, it starts from its own memory: how sides priced like this one did across every game it has settled. The pick records whether a suggestion was on screen, so your scorecard can say whether following the coach actually lowered your Brier. The advice itself gets graded.
 
-**TopPickers.** Once you have three graded picks with a Brier of 0.25 or better, you become a paid source. When Calibro buys the TopPickers signal for a game, it combines qualified users' picks by trust weight and splits the x402 fee among them in proportion. One Sui transaction pays every share. The challenge signs the shares in, so they can't be swapped, and the server checks through Tatum that each wallet was credited before releasing the signal. Each payout is written to the picker's history on Walrus. TopPickers is calibrated and vetoed like any other source, so a crowd that stops being right stops being paid. Humans and models compete on the same ledger for the same fees.
+**TopPickers.** Once you have three graded picks with a Brier of 0.25 or better, you become a paid source. When Calibro buys the TopPickers signal for a game, it combines qualified users' picks by trust weight and splits the x402 fee among them in proportion. One Sui transaction pays every share. The challenge signs the shares in, so they can't be swapped, and the server checks through Tatum that each wallet was credited before releasing the signal. Each payout is written to the picker's history on Walrus. TopPickers is calibrated and vetoed like any other source, so a crowd that stops being right stops being paid. Humans and models compete on the same ledger for the same fees. This has already happened on Mainnet: one picker with 16 graded picks (Brier 0.165) qualified, and was paid by TopPickers on 76ers vs. Bulls ([`7TqEbMp…`](https://suiscan.xyz/mainnet/tx/7TqEbMpQuPhzK35jyjTjgtokNdmqPSQZ3LTsuxL7vDid)) and on Lakers vs. Pistons ([`M5FUA4…`](https://suiscan.xyz/mainnet/tx/M5FUA4aj5BjiUHjHt5uD3PKpFemxsHYNf8meio7cFmi)).
 
 ## Watching it learn
 
@@ -132,16 +130,17 @@ Calibro now sells its own calibrated forecast over the same 402 protocol, for 0.
 
 ## Mainnet proof
 
-Everything below comes from relayer and Sui responses recorded in `docs/mainnet-memory-proof.json`.
+Everything below comes from relayer and Sui responses, not typed by hand.
 
 - Walrus Memory account: [`0x47a5e5519693665084fd119d8f0c8802c7a331d8d80b71298183e80af833c0ec`](https://suiscan.xyz/mainnet/object/0x47a5e5519693665084fd119d8f0c8802c7a331d8d80b71298183e80af833c0ec)
-- Inventory as of 7 November 2026: **232 memories**: 76 in `calibro:episodic` (theses and post-mortems), 155 in `calibro:calibration`, 1 in `calibro:mandates`.
+- Inventory as of 9 November 2026: **312 memories**: 82 in `calibro:episodic` (theses and post-mortems), 173 in `calibro:calibration`, 56 in `calibro:picks`, 1 in `calibro:mandates`.
 - Example blobs (one market, *Will Hull City AFC win on 2026-10-31?*):
   - thesis [`Z8seB8VSOkxSR6t8USdZAYnp42R3QdjzvZqt6Enhin0`](https://walruscan.com/mainnet/blob/Z8seB8VSOkxSR6t8USdZAYnp42R3QdjzvZqt6Enhin0)
   - post-mortem [`JdGYWx9D35MyD96MN2FOH_dp21FXMuRW_p76L_frN7o`](https://walruscan.com/mainnet/blob/JdGYWx9D35MyD96MN2FOH_dp21FXMuRW_p76L_frN7o)
   - calibration checkpoint [`hK1KBaCwWiPRe0rE8278wfjxls-3nJKYxr5GVB8kyMo`](https://walruscan.com/mainnet/blob/hK1KBaCwWiPRe0rE8278wfjxls-3nJKYxr5GVB8kyMo)
-- x402 payment digests verified through Tatum (124 in the training run), for example [`6NBv24Pi…`](https://suiscan.xyz/mainnet/tx/6NBv24PiUEqycHN3uzhDAyXF41r6QEEZvBUz89e63Mpe), [`AM4U3Hog…`](https://suiscan.xyz/mainnet/tx/AM4U3Hog7ZQPpynZrDaUsnmogNwPu4ogbjSYuuZVgfoD), [`FiJa4jqf…`](https://suiscan.xyz/mainnet/tx/FiJa4jqfRsYbAL6KxyoSBZxmwVKCpivQTEDY6oh6Sxu1).
-- A second wallet (our signal treasury, standing in for an outside agent) buying Calibro's forecast for 0.01 SUI: [`6LdsBTha…`](https://suiscan.xyz/mainnet/tx/6LdsBThaAGd1VhkcfVXKwwS98qJr5XGypwuwmZpUnNY4). To fill it, Calibro paid five sources over x402 and vetoed HypeContrarian (recalled NBA Brier 0.310).
+- One game end to end: Lakers vs. Pistons, evaluated live on 8 November. Six signals paid over x402 (for example SharpSteam [`Fk7eWK…`](https://suiscan.xyz/mainnet/tx/Fk7eWKgJQvoQhtMnq5jCtnF6pwzEQdvYLxYKuvn9hA7D)), HypeContrarian refused from memory (recalled NBA Brier 0.310). After Polymarket resolved it, the scheduled job settled it with no one pressing a button and wrote the post-mortem [`kAko0gTe…`](https://walruscan.com/mainnet/blob/kAko0gTeutdFhq4gqh1d0PqHZFlgo7gPcBxaz24eJUQ). Lakers won; Calibro had said 35%, Polymarket 37.5%. Both were wrong, and the record shows it.
+- x402 payment digests verified through Tatum (144 in the record), for example [`6NBv24Pi…`](https://suiscan.xyz/mainnet/tx/6NBv24PiUEqycHN3uzhDAyXF41r6QEEZvBUz89e63Mpe), [`AM4U3Hog…`](https://suiscan.xyz/mainnet/tx/AM4U3Hog7ZQPpynZrDaUsnmogNwPu4ogbjSYuuZVgfoD), [`FiJa4jqf…`](https://suiscan.xyz/mainnet/tx/FiJa4jqfRsYbAL6KxyoSBZxmwVKCpivQTEDY6oh6Sxu1).
+- An outside wallet buying Calibro's forecast for 0.01 SUI: [`AM4Q96W3…`](https://suiscan.xyz/mainnet/tx/AM4Q96W3MDfj1PHwBHphemr1buaRstQG8Z6XVfJhCP3K). It received the thesis already on Walrus, with HypeContrarian vetoed.
 - Agent wallet [`0xe33f…7c82`](https://suiscan.xyz/mainnet/account/0xe33f666912d7e58ea5f86b25c37059b8c47e4dcfb83deadce4603c37e1267c82) · signal treasury [`0x5e2d…a450`](https://suiscan.xyz/mainnet/account/0x5e2d891a6c7da182d4618d383d2221b20ba171c1dcdfa836d207af8ceff3a450)
 
 ## Portable brain
